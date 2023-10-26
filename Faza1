@@ -1,0 +1,262 @@
+#include<iostream>
+using namespace std;
+//domeniul ales este MeDicina
+class Spital {
+public:
+	string nume;
+	const int anInfiintare;
+	int nrPaturi;
+	int nrPacienti;
+	static int nrSectiiATI;
+	char* localitate;
+	Spital() :anInfiintare(1988) {                  //Lista de initializare
+		this->nume = "Elias";
+		this->nrPaturi = 15;
+		this->nrPacienti = 3;
+		this->localitate = new char[strlen("Bucuresti") + 1];
+		strcpy_s(this->localitate, strlen("Bucuresti") + 1, "Bucuresti");
+		}
+	void afisare() {
+		cout << "nume:" << this->nume;
+		cout << "\nan infiintare:" << this->anInfiintare;
+		cout << "\nnrPacieti:" << this->nrPacienti;
+		cout << "\nnrPaturi:" << this->nrPaturi;
+		cout << "\nnr sectii ATI:" << this->nrSectiiATI;
+		cout << "\nlocalitate:" << this->localitate;
+		cout << endl;
+		cout << endl;
+	}
+	Spital( string nume,const int an, int nrPaturi, int nrPacienti,const char* localitate) : anInfiintare(an) {
+		this->nume = nume;
+		this->nrPaturi = nrPaturi;
+		this->nrPacienti = nrPacienti;
+		this->localitate = new char[strlen(localitate) + 1];
+		strcpy_s(this->localitate, strlen(localitate)+1, localitate);
+	}
+	Spital(const int an,int nrPaturi, int nrPacienti):anInfiintare(an) {
+		this->nume = "Regina Maria";
+		this->nrPaturi = nrPaturi;
+		this->nrPacienti = nrPacienti;
+		this->localitate = new char[strlen("Bucuresti") + 1];
+		strcpy_s(this->localitate, strlen("Bucuresti") + 1, "Bucuresti");
+
+	}
+	~Spital() {
+		if(this->localitate!=NULL)
+		{
+			delete[]this->localitate;
+		}
+	}
+	static void nrNouSecATI()
+	{
+		nrSectiiATI = nrSectiiATI * 2;
+	}
+};
+int Spital::nrSectiiATI = 1;
+class echipamentMedical {
+public:
+	string nume;
+	char* specializare;
+	float pret;
+	int aniUtilizare;
+	static int perioadaGarantie;
+	const int nrOperatori; //necesar de personal pentru ca aparatul sa fie pus in functiune
+	bool estePornit;
+	int nrDefectiuni;
+	void afisare() {
+		cout << "\nNume echipament:" << this->nume;
+		cout << "\nSpecializare:" << this->specializare;
+		cout << "\nPret:" << this->pret;
+		cout << "\nAni utilizare:" << this->aniUtilizare;
+		cout << "\nPerioada garantie:" << this->perioadaGarantie;
+		cout << "\nNumar operatori:" << this->nrOperatori;
+		cout << "\nEste pornit:" << this->estePornit;
+		cout << "\nNumar defectiuni:" << this->nrDefectiuni;
+		cout << endl;
+		cout << endl;
+	}
+	echipamentMedical(string nume, const char* specializare, int aniUtilizare, const int nrOp) :nrOperatori(nrOp) {
+		this->nume = nume;
+		this->specializare = new char[strlen(specializare) + 1];
+		strcpy_s(this->specializare, strlen(specializare) + 1, specializare);
+		this->pret = 7000;
+		this->aniUtilizare = aniUtilizare;
+		this->estePornit = 0;
+		if (this->aniUtilizare <= 2)
+			this->nrDefectiuni = 0;
+		else
+		{
+			this->nrDefectiuni = this->aniUtilizare - 1;
+		}
+
+	}
+	echipamentMedical(bool estePornit) :nrOperatori(2) {
+		this->nume = "Aparat resuscitere";
+		this->specializare = new char[strlen("Reanimare") + 1];
+		strcpy_s(this->specializare, strlen("Reanimare") + 1, "Reanimare");
+		this->pret = 4000;
+		this->aniUtilizare = 4;
+		this->estePornit = estePornit;
+		if (this->aniUtilizare <= 3)
+			this->nrDefectiuni = 0;
+		else
+		{
+			this->nrDefectiuni = this->aniUtilizare - 1;
+		}
+
+}
+	echipamentMedical(const char* nume,float pret):nrOperatori(1) {
+		float x;
+		this->nume = nume;
+		this->pret = pret;
+		x = this->pret;
+		if (x < 2000) {
+			this->specializare = new char[strlen("Pneumologie") + 1];
+			strcpy_s(this->specializare, strlen("Pneumologie") + 1, "Pneumologie");
+
+		} else
+		{
+			this->specializare = new char[strlen("Chirurgie") + 1];
+			strcpy_s(this->specializare, strlen("Chirurgie") + 1, "Chirurgie");
+		}
+		this->aniUtilizare = 8;
+		this->estePornit = 0;
+		this->nrDefectiuni = 2;
+
+
+	}
+	~echipamentMedical() {
+		if (this->specializare != NULL)
+		{
+			delete[]this->specializare;
+		}
+	}
+
+
+};
+int echipamentMedical::perioadaGarantie = 2;
+class Medicament {
+public:
+	char* denumire;
+	string modDeAdministrare;
+	float pretIntreg;
+	float reducere; //medicamente compensate
+	float pretRedus;
+	static float TVA;
+	bool prescriptieMedicala;
+	int nrFarmaciiPartenere;
+	int* nrProdDisponibil; //se calculeaza per farmacie
+	const int termenValabilitate; //masurat in luni
+	void afisare() {
+		cout << "\nDenumire medicament:" << this->denumire;
+		cout << "\nMod de Administrare:" << this->modDeAdministrare;
+		cout << "\nPret intreg:" << this->pretIntreg;
+		cout << "\nReducere:" << this->reducere;
+		cout << "\nPret redus:" << this->pretRedus;
+		cout << "\nTVA:" << this->TVA;
+		cout << "\nPrescriptie medicala:" << this->prescriptieMedicala;
+		cout << "\nNumar farmacii partenere:" << this->nrFarmaciiPartenere;
+		cout << "\nNumar produse disponibil: ";
+		for (int i = 0; i < this->nrFarmaciiPartenere; i++) {
+			cout << this->nrProdDisponibil[i] << " ";
+		}
+		cout << "\nTermen de valabilitate:" << this->termenValabilitate<<" "<<"luni";
+		cout << endl;
+		cout << endl;
+	}
+
+	Medicament(const char* denumire,float pretIntreg,bool prescriptieMedicala,int nrFarmaciiPartenere) :termenValabilitate(6) {
+		this->denumire = new char[strlen(denumire)+1];
+		strcpy_s(this->denumire, strlen(denumire) + 1, denumire);
+		this->modDeAdministrare = "oral";
+		this->pretIntreg = pretIntreg;
+		this->reducere = 0.5;
+		float x,y;
+		x = this->pretIntreg;
+		y = this->reducere;
+		this->pretRedus = x - x * y;
+		this->prescriptieMedicala = prescriptieMedicala;
+		this->nrFarmaciiPartenere=nrFarmaciiPartenere;
+		this->nrProdDisponibil = new int[this->nrFarmaciiPartenere];
+		for (int i = 0; i < this->nrFarmaciiPartenere; i++) {
+			this->nrProdDisponibil[i] = i*5+3;
+		}
+
+	}
+	Medicament(const char* denumire, string modDeAdministrare, float pretIntreg, float reducere, const int termenV) :termenValabilitate(termenV) {
+		this->denumire = new char[strlen(denumire) + 1];
+		strcpy_s(this->denumire, strlen(denumire) + 1, denumire);
+		this->modDeAdministrare = modDeAdministrare;
+		this->pretIntreg = pretIntreg;
+		this->reducere = reducere;
+		float x, y;
+		x = this->pretIntreg;
+		y = this->reducere;
+		this->pretRedus = x - x * y;
+		this->prescriptieMedicala = 1;
+		this -> nrFarmaciiPartenere = 5;
+		this->nrProdDisponibil = new int[this->nrFarmaciiPartenere];
+		for (int i = 0; i < this->nrFarmaciiPartenere; i++) {
+			this->nrProdDisponibil[i] = i * 5 + 3;
+		}
+	
+
+	}
+	Medicament(string modDeAdministrare, float pretIntreg, float reducere, bool prescriptieMedicala, int nrFarmaciiPartenere, const int termenV) :termenValabilitate(termenV) {
+		this->denumire = new char[strlen("MollekinImuno") + 1];
+		strcpy_s(this->denumire, strlen("MollekinImuno") + 1, "MollekinImuno");
+		this->modDeAdministrare = modDeAdministrare;
+		this->pretIntreg = pretIntreg;
+		this->reducere = reducere;
+		this->prescriptieMedicala = prescriptieMedicala;
+		float x, y;
+		x = this->pretIntreg;
+		y = this->reducere;
+		this->pretRedus = x - x * y;
+		this->nrFarmaciiPartenere = nrFarmaciiPartenere;
+		this->nrProdDisponibil = new int[this->nrFarmaciiPartenere];
+		for (int i = 0; i < this->nrFarmaciiPartenere; i++) {
+			this->nrProdDisponibil[i] = i * 5 + 3;
+		}
+	}
+	~Medicament() {
+		if (this->denumire != NULL)
+		{
+			delete[]this->denumire;
+
+		}
+	}
+	};
+float Medicament::TVA = 0.09;
+void main(){
+	Spital s1;
+	s1.afisare();
+	Spital s2("Ioan Lascar", 2009, 12, 34, "Comanesti");
+	
+	Spital s3(1990, 12, 88);
+	s2.afisare(); 
+	if (s2.nrPaturi < s2.nrPacienti)
+	{
+		s2.nrPaturi = s2.nrPacienti;
+	}
+	if(s1.nrPacienti+s2.nrPacienti+s3.nrPacienti>100)
+	{
+		Spital:: nrNouSecATI();
+	}
+	s2.afisare();
+	s3.afisare();
+	cout << "******************************************************";
+	echipamentMedical e1("EKG", "cardiologie", 5, 1);
+	e1.afisare();
+	echipamentMedical e2(1);
+	e2.afisare();
+	echipamentMedical e3("Tensiometru", 4000);
+	e3.afisare();
+	cout << "******************************************************";
+	Medicament m1("Erdomed", 40, 1, 6);
+	m1.afisare();
+	Medicament m2("HCC", "Intravenos", 50, 0.3, 3);
+	m2.afisare();
+	Medicament m3("Oral", 76, 0.7, 0, 3, 12);
+	m3.afisare();
+}
