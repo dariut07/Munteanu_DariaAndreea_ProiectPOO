@@ -20,7 +20,7 @@ public:
 	int getNrPaturi() {
 		return this->nrPaturi;
 	}
-	int getNrPacienti(){
+	int getNrPacienti() {
 		return this->nrPacienti;
 	}
 	char* getLocalitate() {
@@ -33,7 +33,7 @@ public:
 		}
 	}
 	void setNrPaturi(int nrPaturi) {
-		if (nrPaturi > 0) {             
+		if (nrPaturi > 0) {
 			this->nrPaturi = nrPaturi;
 		}
 	}
@@ -43,17 +43,17 @@ public:
 		}
 	}
 	void setLocalitate(const char* localitate) {
-		if(this->localitate!=NULL)
+		if (this->localitate != NULL)
 		{
 			delete[]this->localitate;
 		}
 		this->localitate = new char[strlen(localitate) + 1];
-		strcpy_s(this->localitate,strlen(localitate)+1, localitate);
+		strcpy_s(this->localitate, strlen(localitate) + 1, localitate);
 	}
 	Spital() :anInfiintare(1988) {                  //Lista de initializare
 		this->nume = "Elias";
 		this->nrPaturi = 15;
-		this->nrPacienti = 3;
+		this->nrPacienti = 8;
 		this->localitate = new char[strlen("Bucuresti") + 1];
 		strcpy_s(this->localitate, strlen("Bucuresti") + 1, "Bucuresti");
 	}
@@ -88,20 +88,51 @@ public:
 		this->nrPaturi = spital.nrPaturi;
 		this->nrPacienti = spital.nrPacienti;
 
-		this->localitate = new char[strlen(spital.localitate)+1];
+		this->localitate = new char[strlen(spital.localitate) + 1];
 		strcpy_s(this->localitate, strlen(spital.localitate) + 1, spital.localitate);
-		
+
 	}
+	//operatori
+	Spital& operator=(const Spital& spital) {      //1.1
+	   if (this != &spital) {
+		   this->nume = spital.nume;
+		   this->nrPaturi = spital.nrPaturi;
+		   this->nrPacienti = spital.nrPacienti;
+
+		   if (this->localitate != NULL) {
+			   delete[]this->localitate;
+		   }                                          
+
+		   this->localitate = new char[strlen(spital.localitate)+1];
+		   strcpy_s(this->localitate, strlen(spital.localitate) + 1, spital.localitate);
+
+		   return *this;
+	   }
+   }
+	 friend ostream& operator<<(ostream& scrie, const Spital& s) {  //1.2
+        scrie << "Nume:" << s.nume << endl;
+		scrie<<"An infiintare:"<<s.anInfiintare<<endl;
+        scrie << "Numar paturi:" << s.nrPaturi << endl;
+        scrie<<"Numar pacienti:"<<s.nrPacienti<<endl;
+        scrie << "Numar sectii ATI" << s.nrSectiiATI << endl;
+        cout << "Localitate: " << s.localitate << endl;
+        cout << endl << endl;
+        return scrie;
+    }
+	  Spital operator++() {    //preincrementare   //1.3
+        this->nrPaturi += 7;
+        return *this;
+    }
+	  Spital operator--() {      //1.4    
+		  this->nrPacienti -= 5;
+		  return *this;
+	  }
 	//destructor
 	~Spital() {
 		if (this->localitate != NULL)
 		{
 			delete[]this->localitate;
 		}
-	}
-	static void nrNouSecATI()
-	{
-		nrSectiiATI = nrSectiiATI * 2;
 	}
 	//functie de accesare var statica
 	static int getSectiiATI() {
@@ -111,12 +142,12 @@ public:
 	friend void paturiNecesare(Spital y);
 
 };
- void paturiNecesare(Spital y) {
-	 if (y.nrPacienti > y.nrPaturi)
-		 cout << "este necesara suplimentarea cu " << y.nrPacienti - y.nrPaturi << " paturi\n";
-	 else {
-		 cout << "sunt suficiente paturi pentru toti pacientii\n";
-	 }
+void paturiNecesare(Spital y) {
+	if (y.nrPacienti > y.nrPaturi)
+		cout << "este necesara suplimentarea cu " << y.nrPacienti - y.nrPaturi << " paturi\n";
+	else {
+		cout << "sunt suficiente paturi pentru toti pacientii\n";
+	}
 }
 int Spital::nrSectiiATI = 1;
 class echipamentMedical {
@@ -159,8 +190,8 @@ public:
 			this->nume = nume;
 		}
 	}
-	void setSpecializare( const char* specializare) {
-		if (this->specializare!=NULL) {
+	void setSpecializare(const char* specializare) {
+		if (this->specializare != NULL) {
 			delete[]this->specializare;
 
 		}
@@ -176,14 +207,15 @@ public:
 	{
 		if (aniUtilizare > -1) {
 			this->aniUtilizare = aniUtilizare;
-	} }
+		}
+	}
 	void setEstePornit(bool estePornit) {
 		if ((estePornit == 1) || (estePornit == 0))
 			this->estePornit = estePornit;
 	}
 	void setNrDefectiuni(int nrDefectiuni) {
 		if (nrDefectiuni > -1) {
-			this -> nrDefectiuni = nrDefectiuni;
+			this->nrDefectiuni = nrDefectiuni;
 		}
 	}
 	void afisare() {
@@ -252,19 +284,56 @@ public:
 	//constructor de copiere
 	echipamentMedical(const echipamentMedical& EchipamentMedical) : nrOperatori(EchipamentMedical.nrOperatori) {
 		this->nume = EchipamentMedical.nume;
-		this->specializare = new char[strlen(EchipamentMedical.specializare)+1];
+		this->specializare = new char[strlen(EchipamentMedical.specializare) + 1];
 		strcpy_s(this->specializare, strlen(EchipamentMedical.specializare) + 1, EchipamentMedical.specializare);
 		this->pret = EchipamentMedical.pret;
 		this->aniUtilizare = EchipamentMedical.aniUtilizare;
 		this->estePornit = EchipamentMedical.estePornit;
 		this->nrDefectiuni = EchipamentMedical.nrDefectiuni;
 	}
+	//operatori
+	echipamentMedical& operator=(const echipamentMedical& EchipamentMedical) {  //2.1
+		if (this != &EchipamentMedical) {
+			this->nume = EchipamentMedical.nume;
+			this->specializare = new char[strlen(EchipamentMedical.specializare) + 1];
+			strcpy_s(this->specializare, strlen(EchipamentMedical.specializare) + 1, EchipamentMedical.specializare);
+			this->pret = EchipamentMedical.pret;
+			this->aniUtilizare = EchipamentMedical.aniUtilizare;
+			this->estePornit = EchipamentMedical.estePornit;
+			this->nrDefectiuni = EchipamentMedical.nrDefectiuni;
+			return *this;
+		}
+	}
+	friend istream& operator>>(istream& citeste, echipamentMedical& e) {   //2.2
+        cout << "Nume:"; citeste >> e.nume;
+		cout<<"Specializare:";
+		if(e.specializare!=NULL){
+		delete[]e.specializare;
+		}
+		e.specializare=new char[strlen(e.specializare)+1];
+		citeste>>e.specializare;
+        cout << "Pret:"; citeste >> e.pret;
+		cout<<"Ani de utilizare:"; citeste>>e.aniUtilizare;
+        cout<<"Este pornit:"; citeste>>e.estePornit;
+cout<<"Numar defectiuni:"; citeste>>e.nrDefectiuni;
+        return citeste;
+    }
+	 echipamentMedical operator++(int) {  //2.3
+        echipamentMedical temporar = *this;
+        this->aniUtilizare += 3;
+        return temporar;
+    }
+	
+	 bool operator>(echipamentMedical e) {  //2.4
+		 return this->pret > e.pret;
+	 }
 	~echipamentMedical() {
 		if (this->specializare != NULL)
 		{
 			delete[]this->specializare;
 		}
 	}
+	
 	//fct de return var statica
 	static int getPerioadaGarantie() {
 		return perioadaGarantie;
@@ -287,7 +356,7 @@ public:
 		return this->denumire;
 
 	}
-	string getModDeAdministrare(){
+	string getModDeAdministrare() {
 		return this->modDeAdministrare;
 	}
 	float getPretIntreg() {
@@ -298,7 +367,7 @@ public:
 	}
 	bool getPrescriptieMedicala() {
 		return this->prescriptieMedicala;
-}
+	}
 	int getNrFarmaciiPartenere() {
 		return this->nrFarmaciiPartenere;
 	}
@@ -307,7 +376,7 @@ public:
 	}
 	//setteri
 	void setDenumire(const char* denumire) {
-		if(this->denumire!=NULL)
+		if (this->denumire != NULL)
 		{
 			delete[]this->denumire;
 		}
@@ -383,7 +452,7 @@ public:
 	}
 	//constructor de copiere
 	Medicament(const Medicament& medicament) :termenValabilitate(medicament.termenValabilitate) {
-		this->denumire = new char[strlen(medicament.denumire)+1];
+		this->denumire = new char[strlen(medicament.denumire) + 1];
 		strcpy_s(this->denumire, strlen(medicament.denumire) + 1, medicament.denumire);
 		this->modDeAdministrare = medicament.modDeAdministrare;
 		this->pretIntreg = medicament.pretIntreg;
@@ -391,6 +460,35 @@ public:
 		this->prescriptieMedicala = medicament.prescriptieMedicala;
 		this->nrFarmaciiPartenere = medicament.nrFarmaciiPartenere;
 	}
+	//operatori
+	Medicament& operator=(const Medicament& medicament) {        //3.1
+		if (this != &medicament) {
+			this->denumire = new char[strlen(medicament.denumire) + 1];
+			strcpy_s(this->denumire, strlen(medicament.denumire) + 1, medicament.denumire);
+			this->modDeAdministrare = medicament.modDeAdministrare;
+			this->pretIntreg = medicament.pretIntreg;
+			this->reducere = medicament.reducere;
+			this->prescriptieMedicala = medicament.prescriptieMedicala;
+			this->nrFarmaciiPartenere = medicament.nrFarmaciiPartenere;
+			return *this;
+		}
+
+	}
+	bool operator<(Medicament m) {      //3.2
+	return this->pretIntreg < m.pretIntreg;
+	}
+	Medicament operator++(int) {       //3.3
+		Medicament temporar=*this;
+		this->reducere += 0.05;
+		return temporar;
+
+	}
+	
+	 bool operator!=(Medicament m) {    //3.4
+		 return this->nrFarmaciiPartenere != m.nrFarmaciiPartenere;
+	 }
+	
+	
 	~Medicament() {
 		if (this->denumire != NULL)
 		{
@@ -413,32 +511,43 @@ void pretRedus(Medicament x) {
 }
 void main() {
 	Spital s1;
+	cout << "Obiectul s1:"<<endl;
 	s1.afisare();
 	paturiNecesare(s1);
 	Spital s2("Ioan Lascar", 2009, 12, 34, "Comanesti");
 	Spital s3(1990, 12, 88);
+	cout << "Obiectul s2:"<<endl;
 	s2.afisare();
+	cout << "Obiectul s3:"<<endl;
 	s3.afisare();
 	cout << "******************************************************";
 	echipamentMedical e1("EKG", "cardiologie", 5, 1);
+	cout << "\nObiectul e1:";
 	e1.afisare();
 	echipamentMedical e2(1);
+	cout << "Obiectul e2:";
 	e2.afisare();
 	echipamentMedical e3("Tensiometru", 4000);
+	cout << "Obiectul e3:";
 	e3.afisare();
 	cout << "******************************************************";
 	Medicament m1("Erdomed", 40, 1, 6);
+	cout << "\nObiectul m1:";
 	m1.afisare();
 	Medicament m2("HCC", "Intravenos", 50, 0.3, 3);
+	cout << "Obiectul m2:";
 	m2.afisare();
 	pretRedus(m2);
 	Medicament m3("Oral", 76, 0.7, 0, 3, 12);
+	cout << "\nObiectul m3:";
 	m3.afisare();
-
-	cout << "\nverificare getteri si setteri:";
+	cout << "#########################################################";
+	cout << "\nVERIFICARE GETTERI SI SETTERI:";
 	cout << "\nPentru clasa Spital:" << endl;
+	cout << "GETTERI:"<<endl;
 	cout << s1.getNume() << " |" << s1.getAnInfiintare() << " |" << s1.getNrPaturi() << " paturi | ";
-	cout << s1.getNrPacienti() << " pacienti | " << s1.getSectiiATI() << " sectii ATI | " << s1.getLocalitate()<<endl;
+	cout << s1.getNrPacienti() << " pacienti | " << s1.getSectiiATI() << " sectii ATI | " << s1.getLocalitate() << endl;
+	cout << "SETTERI:" << endl;
 	s1.setNume("Spitalul Militar");
 	s1.setNrPaturi(20);
 	s1.setNrPacienti(12);
@@ -446,10 +555,12 @@ void main() {
 	cout << s1.getNume() << " |" << s1.getAnInfiintare() << " |" << s1.getNrPaturi() << " paturi |";
 	cout << s1.getNrPacienti() << " pacienti | " << s1.getSectiiATI() << " sectii ATI | " << s1.getLocalitate();
 	cout << "\nPentru clasa echipamentMedical:" << endl;
+	cout << "GETTERI:" << endl;
 	cout << e1.getNume() << " |" << e1.getSpecializare() << " |" << e1.getPret() << " lei | ";
-	cout << e1.getAniUtilizare() << " ani | " << e1.getPerioadaGarantie() << " ani garantie | " ;
+	cout << e1.getAniUtilizare() << " ani | " << e1.getPerioadaGarantie() << " ani garantie | ";
 	cout << e1.getNrOperatori() << " operatori| ";
-	cout  << e1.getEstePornit() <<" | "<< e1.getNrDefectiuni() << " defectiuni" << endl;
+	cout << e1.getEstePornit() << " | " << e1.getNrDefectiuni() << " defectiuni" << endl;
+	cout << "SETTERI:" << endl;
 	e1.setNume("Spirometru");
 	e1.setSpecializare("Pneumologie");
 	e1.setPret(1500);
@@ -460,10 +571,12 @@ void main() {
 	cout << e1.getAniUtilizare() << " ani | " << e1.getPerioadaGarantie() << " ani garantie | ";
 	cout << e1.getNrOperatori() << " operatori| ";
 	cout << e1.getEstePornit() << " | " << e1.getNrDefectiuni() << " defectiuni" << endl;
-	cout << "\nPentru clasa Medicament:\n";
-	cout << m1.getDenumire() << " |" << m1.getModDeAdministrare() << " |" << m1.getPretIntreg() << " lei | " << m1.getReducere()<<" | ";
+	cout << "Pentru clasa Medicament:\n";
+	cout << "GETTERI:" << endl;
+	cout << m1.getDenumire() << " |" << m1.getModDeAdministrare() << " |" << m1.getPretIntreg() << " lei | " << m1.getReducere() << " | ";
 	cout << m1.getTVA() << " | " << m1.getPrescriptieMedicala() << " | " << m1.getNrFarmaciiPartenere() << " farmacii |";
 	cout << m1.getTermenValabilitate() << " ani\n";
+	cout << "SETTERI:" << endl;
 	m1.setDenumire("Quixx");
 	m1.setModDeAdministrare("Nazal");
 	m1.setPretIntreg(21.50);
@@ -473,13 +586,92 @@ void main() {
 	cout << m1.getDenumire() << " |" << m1.getModDeAdministrare() << " |" << m1.getPretIntreg() << " lei | " << m1.getReducere() << " | ";
 	cout << m1.getTVA() << " | " << m1.getPrescriptieMedicala() << " | " << m1.getNrFarmaciiPartenere() << " farmacii |";
 	cout << m1.getTermenValabilitate() << " ani\n";
+	cout << "#########################################################";
 	Spital s4 = s2;
+	cout << "\nObiectul s4 creat pe baza constructorului de copiere:" << endl;
 	s4.afisare();
 	cout << endl;
+	Spital s5;
+	cout << "\nObiectul s5:" << endl;
+	s5.afisare();
+	cout <<"Dupa utilizrea operatorului = noul s5 va fi:"<< endl;
+	s5 = s3;
+	s5.afisare();
 	echipamentMedical e4 = e1;
-	e1.afisare();
+	cout << "\nObiectul e4 realizat pe baza constructorului de copiere:" << endl;
+	e4.afisare();
+	echipamentMedical e5("Glucometru","Diabetologie",6,2);
+	cout << "\nObiectul e5:" << endl;
+	e5.afisare();
+	e5 = e2;
+	cout << "Dupa utilizarea operatorului = obiectul e5 este:"<<endl;
+	e5.afisare();
 	cout << endl;
 	Medicament m4 = m3;
+	cout << "obiectul m4 realizat pe baza constructorului de copiere este:";
 	m4.afisare();
-
+	Medicament m5("Sinupret", 64, 0, 7);
+	cout << "\nObiectul m5 este:";
+	m5.afisare();
+	m5 = m1;
+	cout << "\nDupa utilizarea operatorului = obiectul m5 este:" << endl;
+	m5.afisare();
+	cout << "Verificare operatori,exceptand cei de atribuire:" << endl;
+	cout << "Operatorului <<:"<<endl;
+	cout << s1;
+	Spital s6;
+	cout << "Obiectul s6:" << endl;
+	s6.afisare();
+	Spital s7;
+	s7.afisare();
+	cout << "Obiectul s7:" << endl;
+	s7 = ++s6;
+	s7 = --s6;
+	cout << "Dupa aplicarea operatorilor obiectul s7 este:" << endl;
+	s7.afisare();
+	echipamentMedical e6(1);
+	cout << "Citire echipament medical"<<endl;
+	cin >> e6;
+	e6.afisare();
+	if (e1 > e2) {
+		cout << "Echipamentul medical " << e1.getNume() << " este mai scump decat" << e2.getNume()<<endl;
+	}
+	else
+	{
+		cout << "Echipamentul medical " << e1.getNume() << " este mai ieftin sau la fel de scump ca " << e2.getNume()<<endl;
+	}
+	if (m2 < m4) {
+		cout << "Medicamentul "<<m2.getDenumire() << " este mai ieftin decat "<< m4.getDenumire()<<endl;
+	}
+	else
+	{
+		cout << "Medicamentul " << m2.getDenumire() << " este mai scump sau la fel de scump ca " << m4.getDenumire()<<endl;
+	}
+	
+	echipamentMedical e7(0);
+	cout << "Obiectul e7:";
+	e7.afisare();
+	cout << "Obiectul e2:";
+	e2.afisare();
+	e2 = e7++;
+	cout << "Obiectul e7:";
+	e7.afisare();
+	Medicament m6("Tranchisept", 23, 0, 12);
+	Medicament m7("Aspenter", 15, 0, 39);
+	m6.afisare();
+	cout << "Obiectul m7:" << endl;
+	m7.afisare();
+	m6 = m7++;
+	m6.afisare();
+	cout << "Obiectul m7:" << endl;
+	m7.afisare();
+	if (m3 != m2) {
+		cout << "Medicamentul " << m3.getDenumire() << " nu este la acelasi numar de farmacii precum medicamentul " << m2.getDenumire();
+	}
+	else
+	{
+		cout << "Medicamentul " << m3.getDenumire() << " este la acelasi numar de farmacii precum medicamentul " << m2.getDenumire();
+	}
+	
+	
 }
