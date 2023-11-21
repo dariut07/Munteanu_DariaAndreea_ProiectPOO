@@ -65,7 +65,6 @@ public:
 		cout << "\nnr sectii ATI:" << this->nrSectiiATI;
 		cout << "\nlocalitate:" << this->localitate;
 		cout << endl;
-		cout << endl;
 	}
 	Spital(string nume, const int an, int nrPaturi, int nrPacienti, const char* localitate) : anInfiintare(an) {
 		this->nume = nume;
@@ -114,9 +113,9 @@ public:
 		scrie << "An infiintare:" << s.anInfiintare << endl;
 		scrie << "Numar paturi:" << s.nrPaturi << endl;
 		scrie << "Numar pacienti:" << s.nrPacienti << endl;
-		scrie << "Numar sectii ATI" << s.nrSectiiATI << endl;
+		scrie << "Numar sectii ATI:" << s.nrSectiiATI << endl;
 		cout << "Localitate: " << s.localitate << endl;
-		cout << endl << endl;
+		cout << endl ;
 		return scrie;
 	}
 	Spital operator++() {    //preincrementare   //1.3
@@ -127,11 +126,11 @@ public:
 		this->nrPacienti -= 5;
 		return *this;
 	}
-	friend istream& operator>>(istream& citeste, Spital& s) {   
+	friend istream& operator>>(istream& citeste, Spital& s) {
 		cout << "Nume:"; citeste >> s.nume;
 		cout << "Numar paturi:"; citeste >> s.nrPaturi;
 		cout << "Numar pacienti:"; citeste >> s.nrPacienti;
-		cout << "Localitate:"; 
+		cout << "Localitate:";
 		if (s.localitate != NULL) {
 			delete[]s.localitate;
 		}
@@ -144,6 +143,7 @@ public:
 		if (this->localitate != NULL)
 		{
 			delete[]this->localitate;
+			this->localitate = NULL;
 		}
 	}
 	//functie de accesare var statica
@@ -340,13 +340,13 @@ public:
 		cout << "Numar defectiuni:"; citeste >> e.nrDefectiuni;
 		return citeste;
 	}
-	friend ostream& operator<<(ostream& scrie , echipamentMedical& e) {
-		scrie << "Nume:"<< e.nume<< endl;
+	friend ostream& operator<<(ostream& scrie, echipamentMedical& e) {
+		scrie << "Nume:" << e.nume << endl;
 		scrie << "Specializare:" << e.specializare << endl;
 		scrie << "Pret:" << e.pret << endl;
 		scrie << "Ani de utilizare:" << e.aniUtilizare << endl;
 		scrie << "Perioada de garantie" << e.perioadaGarantie << " ani" << endl;
-		scrie << "Numar operatori:" << e.nrOperatori<<endl;
+		scrie << "Numar operatori:" << e.nrOperatori << endl;
 		scrie << "Este pornit:" << e.estePornit << endl;
 		scrie << "Numar defectiuni:" << e.nrDefectiuni << endl;
 		return scrie;
@@ -547,9 +547,9 @@ public:
 	friend ostream& operator<<(ostream& scrie, const Medicament& m) {
 		scrie << "Denumire:" << m.denumire << endl;
 		scrie << "Mod de administrare:" << m.modDeAdministrare << endl;
-		scrie << "Pret intreg:" << m.reducere<<endl;
+		scrie << "Pret intreg:" << m.reducere << endl;
 		scrie << "Reducere:" << m.reducere << endl;
-		scrie << "TVA:" << m.TVA<<endl;
+		scrie << "TVA:" << m.TVA << endl;
 		scrie << "Prescriptie medicala:" << m.prescriptieMedicala << endl;
 		scrie << "Numar farmacii partenere:" << m.nrFarmaciiPartenere << endl;
 		scrie << "Termen de valabiliate:" << m.termenValabilitate << " luni" << endl;
@@ -572,6 +572,122 @@ public:
 	friend void pretRedus(Medicament x);
 };
 float Medicament::TVA = 0.09;
+//noua clasa
+class Doctor {
+private:
+	string nume;
+	Spital spital;
+	const int anNastere;
+	float salariu;
+	char* specializare;
+	int aniVechime;
+public:
+	string getNume() {
+		
+			return this->nume;
+	}
+	Spital getSpital() {
+		return this->spital;
+	}
+	const int getAnNastere() {
+	
+		return this->anNastere;
+	}
+	float getSalariu() {
+		return this->salariu;
+	}
+	 char* getSpecializare(){
+		return this->specializare;
+	}
+	 int getAniVechime() {
+		 return this->aniVechime;
+	 }
+	 void setNume(string nume) {
+		 this->nume = nume;
+	 }
+	 void setSpecializare(const char* specializare) {
+		 if (this->specializare != NULL)
+		 {
+			 delete[]this->specializare;
+		 }
+		 this->specializare = new char[strlen(specializare) + 1];
+		 strcpy_s(this->specializare, strlen(specializare) + 1, specializare);
+	 }
+	 void setSpital(Spital s) {
+		 this->spital = s;
+	}
+	 void setSalariu(float s) {
+		 this->salariu = s;
+	 }
+	 void setAniVechime(int a) {
+		 this->aniVechime = a;
+	 }
+	Doctor() :anNastere(1978) {
+		this->nume = "Popescu";
+		this->spital =spital;
+		this->salariu = 12000;
+		this->specializare = new char[strlen("Cardiologie") + 1];
+		strcpy_s(this->specializare, strlen("Cardiologie") + 1, "Cardiologie");
+		this->aniVechime = 15;
+	}
+	Doctor(string nume,const char* specializare,const int an) :anNastere(an) {
+		this->nume = nume;
+		this->spital = spital;
+		this->salariu = 10000;
+		this->specializare = new char[strlen(specializare) + 1];
+		strcpy_s(this->specializare, strlen(specializare) + 1, specializare);
+		this->aniVechime = 7;
+	}
+	Doctor(const Doctor& d):anNastere(d.anNastere) {
+		this->nume = d.nume;
+		this->spital = d.spital;
+		this->salariu = d.salariu;
+		this->specializare = new char[strlen(d.specializare) + 1];
+		strcpy_s(this->specializare, strlen(d.specializare) + 1, d.specializare);
+		this->aniVechime = d.aniVechime;
+		
+	}
+	//operatori
+	friend istream& operator>>(istream& citire, Doctor& d) {
+		cout << "Nume:";citire >> d.nume;
+		cout << "Spitalul la care lucreaza:"; citire >> d.spital;
+		cout << "Salariul:"; citire >> d.salariu;
+		cout << "Specializare:"; 
+		if(d.specializare!=NULL){
+		delete[]d.specializare;
+		}
+		d.specializare = new char[strlen(d.specializare) + 1];
+		cin>>d.specializare;
+		cout << "Ani vechime:"; citire >> d.aniVechime;
+		return citire;
+	}
+	friend ostream& operator<<(ostream& scrie, const Doctor& d) {
+		scrie << "Nume:" << d.nume << endl;
+		scrie << "Spitalul la care lucreaza:\n" << d.spital << endl;
+		scrie << "Anul nasterii:" << d.anNastere << endl;
+		scrie << "Salariul:" << d.salariu<< endl;
+		scrie << "Specializare:" << d.specializare << endl;
+		scrie << "Anii vechime:" << d.aniVechime << " ani" << endl;
+		return scrie;
+	}
+	Doctor& operator=(const Doctor& doctor) {
+		if (this != &doctor) {
+			this->nume = doctor.nume;
+			this->spital = doctor.spital;
+			this->salariu = doctor.salariu;
+			this->specializare = new char[strlen(doctor.specializare) + 1];
+			strcpy_s(this->specializare, strlen(doctor.specializare) + 1, doctor.specializare);
+			this->aniVechime = doctor.aniVechime;
+			return *this;
+		}
+
+	}
+	~Doctor() {
+		if (specializare != NULL) {
+			delete[]this->specializare;
+		}
+	}
+};
 
 void pretRedus(Medicament x) {
 	float y;
@@ -749,7 +865,7 @@ void main() {
 	}
 	cout << "Afisare spitale:" << endl;
 	for (i = 0; i < 2; i++) {
-		cout<< s[i];
+		cout << s[i];
 		cout << "**********************************************************" << endl;
 	}
 	cout << "\nCitire echipament medical:" << endl;
@@ -758,11 +874,11 @@ void main() {
 		cin >> e[i];
 
 	}
-	cout << "\nAfisare echipament medical:"<<endl;
+	cout << "\nAfisare echipament medical:" << endl;
 	for (i = 0; i < 2; i++) {
 		cout << e[i];
 		cout << "**************************************************************" << endl;
-		
+
 
 	}
 	cout << "Citire medicamente:" << endl;
@@ -770,12 +886,12 @@ void main() {
 	for (i = 0; i < 2; i++) {
 		cin >> m[i];
 	}
-	cout << "\nAfisare medicamente:"<<endl;
+	cout << "\nAfisare medicamente:" << endl;
 	for (i = 0; i < 2; i++) {
-		cout<< m[i];
-		cout << "*********************************************************************"<<endl;
+		cout << m[i];
+		cout << "*********************************************************************" << endl;
 	}
-cout << "Citire matrice cu medicamente:" << endl;
+	cout << "Citire matrice cu medicamente:" << endl;
 	Medicament md[2][2];
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 2; j++)
@@ -789,5 +905,28 @@ cout << "Citire matrice cu medicamente:" << endl;
 			cout << "************************************************************************" << endl;
 		}
 	}
-
+Doctor d1;
+cout <<"obiectul d1:"<< d1 << endl;
+Doctor d2;
+cin >> d2;
+cout <<"obiectul d2:"<< d2 << endl;
+Doctor d3("Vasilescu", "Pneumologie", 1980);
+cout << "obiectul d3:"<<endl << d3 << endl;
+Doctor d4;
+cout << "obiectul d4:" << endl<<d4<< endl;
+d4 = d3;
+cout << "obiectul d4 dupa utilizarea operatorului =:"<<endl << d4 << endl;
+Doctor d5=d3;
+cout << "obiectul d5 dupa construirea cu ajutorului constructorului de copiere:"<<endl << d5 << endl;
+cout << endl << "VERIFICARE GETTERI:" << endl;
+cout << d1.getNume() << "|" << d1.getSpital() << "|" << d1.getAnNastere() << "|" << d1.getSalariu() << "|";
+cout<< d1.getAniVechime() << "|"<<d1.getSpecializare()<<endl;
+cout << "VERIFICARE SETTERI:" << endl;
+d4.setNume("Opincariu");
+d4.setAniVechime(8);
+d4.setSpecializare("Oncologie");
+d4.setSalariu(12330);
+Spital s10(2000,12,9); //anul infintarii este de tip const ceea ce inseamna ca valoarea primului parametru va fi inutila pt setter
+d4.setSpital(s10);
+cout << "d4 dupa setteri:" << endl << d4;
 }
