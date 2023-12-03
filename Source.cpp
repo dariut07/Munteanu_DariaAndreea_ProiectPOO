@@ -1,4 +1,5 @@
 #include<iostream>
+#include<fstream>
 using namespace std;
 //domeniul ales este MeDicina
 class Spital {
@@ -115,7 +116,7 @@ public:
 		scrie << "Numar pacienti:" << s.nrPacienti << endl;
 		scrie << "Numar sectii ATI:" << s.nrSectiiATI << endl;
 		cout << "Localitate: " << s.localitate << endl;
-		cout << endl ;
+		cout << endl;
 		return scrie;
 	}
 	Spital operator++() {    //preincrementare   //1.3
@@ -146,7 +147,30 @@ public:
 			this->localitate = NULL;
 		}
 	}
-	//functie de accesare var statica
+	//scriere in fisier
+	friend ofstream& operator<<(ofstream& scrie, const Spital& s) {
+		scrie <<  s.nume << endl;
+		scrie <<s.anInfiintare << endl;
+		scrie << s.nrPaturi << endl;
+		scrie << s.nrPacienti << endl;
+		scrie  << s.nrSectiiATI << endl;
+		scrie << s.localitate << endl;
+		scrie << endl;
+		return scrie;
+
+	}
+	friend ifstream& operator>>(ifstream& citeste, Spital& s) {
+		citeste >> s.nume;
+		float val = 0;
+		citeste >> val; //pt an infiintare care e tip de const int
+		citeste >>s.nrPaturi;
+		citeste >> s.nrPacienti;
+		citeste >> val; //pt nrSectiiATI care e de tip static
+		citeste >> s.localitate;
+		return citeste;
+
+
+	}
 	static int getSectiiATI() {
 		return nrSectiiATI;
 	}
@@ -345,7 +369,7 @@ public:
 		scrie << "Specializare:" << e.specializare << endl;
 		scrie << "Pret:" << e.pret << endl;
 		scrie << "Ani de utilizare:" << e.aniUtilizare << endl;
-		scrie << "Perioada de garantie" << e.perioadaGarantie << " ani" << endl;
+		scrie << "Perioada de garantie:" << e.perioadaGarantie << " ani" << endl;
 		scrie << "Numar operatori:" << e.nrOperatori << endl;
 		scrie << "Este pornit:" << e.estePornit << endl;
 		scrie << "Numar defectiuni:" << e.nrDefectiuni << endl;
@@ -356,10 +380,54 @@ public:
 		this->aniUtilizare += 3;
 		return temporar;
 	}
-
 	bool operator>(echipamentMedical e) {  //2.4
 		return this->pret > e.pret;
 	}
+	//metoda pentru a citi intr un fisier binar
+	void citesteInFisBinar(fstream& f) {
+		int sizeOfNume = this->nume.length();
+		f.write((char*)&sizeOfNume, sizeof(int));
+		for (int i = 0; i < sizeOfNume; i++) {
+			f.write((char*)&this->nume[i], sizeof(char));
+		}
+		int sizeOfSpecializare = strlen(this->specializare);
+		f.write((char*)&sizeOfSpecializare, sizeof(int));
+		for (int i = 0; i < sizeOfSpecializare; i++) {
+			f.write((char*)&this->specializare[i], sizeof(char));
+		}
+		f.write((char*)&pret, sizeof(float));
+		f.write((char*)&aniUtilizare, sizeof(int));
+		f.write((char*)&perioadaGarantie, sizeof(int));
+		f.write((char*)&nrOperatori, sizeof(int));
+		f.write((char*)&estePornit, sizeof(bool));
+		f.write((char*)&nrDefectiuni, sizeof(int));
+
+	}
+	//metoda pentru a citi dintr un fisier binar
+	void citesteDinFisBinar(fstream& f) {
+		int sizeOfNume; 
+		f.read((char*)&sizeOfNume, sizeof(int));
+		for (int i = 0; i < sizeOfNume; i++) {
+			f.read((char*)&this->nume[i], sizeof(char));
+		}
+		this->nume[sizeOfNume] = '\0';
+		int sizeOfSpecializare;
+		f.read((char*)&sizeOfSpecializare, sizeof(int));
+		for (int i = 0; i < sizeOfSpecializare; i++) {
+			f.read((char*)&this->specializare[i], sizeof(char));
+		}
+		this->specializare[sizeOfSpecializare] = '\0';
+		int val = 0;
+		f.read((char*)&pret, sizeof(float));
+		f.read((char*)&aniUtilizare, sizeof(int));
+		f.read((char*)&val, sizeof(int));
+		f.read((char*)&val, sizeof(int));
+		f.read((char*)&estePornit, sizeof(bool));
+		f.read((char*)&nrDefectiuni, sizeof(int));
+
+	}
+
+
 	~echipamentMedical() {
 		if (this->specializare != NULL)
 		{
@@ -565,6 +633,36 @@ public:
 
 		}
 	}
+	//operator scriere in fisier ofstream
+	friend ofstream& operator<<(ofstream& scrie, const Medicament& m) {
+		scrie << m.denumire << endl;
+		scrie << m.modDeAdministrare << endl;
+		scrie << m.pretIntreg << endl;
+		scrie << m.reducere;
+		scrie << m.TVA << endl;
+		scrie << m.prescriptieMedicala << endl;
+		scrie << m.nrFarmaciiPartenere << endl;
+		scrie << m.termenValabilitate<<endl;
+		return scrie;
+	}
+	//operator citire din fisier
+	friend ifstream& operator>>(ifstream& citeste, Medicament& m) {
+		if (m.denumire != NULL) {
+			delete[]m.denumire;
+
+		}
+		m.denumire = new char[strlen(m.denumire) + 1];
+		citeste >> m.denumire;
+		citeste >> m.modDeAdministrare;
+		citeste >> m.pretIntreg;
+		citeste>> m.reducere;
+		float val = 0;
+		citeste >> val;//pentru tva care e de tip static
+		citeste >> m.prescriptieMedicala;
+		citeste >> m.nrFarmaciiPartenere;
+	    citeste >> val; //pentru termenValabilitate care e de tip const int
+		return citeste;
+	}
 	//funct de acc var static
 	static float getTVA() {
 		return TVA;
@@ -583,54 +681,54 @@ private:
 	int aniVechime;
 public:
 	string getNume() {
-		
-			return this->nume;
+
+		return this->nume;
 	}
 	Spital getSpital() {
 		return this->spital;
 	}
 	const int getAnNastere() {
-	
+
 		return this->anNastere;
 	}
 	float getSalariu() {
 		return this->salariu;
 	}
-	 char* getSpecializare(){
+	char* getSpecializare() {
 		return this->specializare;
 	}
-	 int getAniVechime() {
-		 return this->aniVechime;
-	 }
-	 void setNume(string nume) {
-		 this->nume = nume;
-	 }
-	 void setSpecializare(const char* specializare) {
-		 if (this->specializare != NULL)
-		 {
-			 delete[]this->specializare;
-		 }
-		 this->specializare = new char[strlen(specializare) + 1];
-		 strcpy_s(this->specializare, strlen(specializare) + 1, specializare);
-	 }
-	 void setSpital(Spital s) {
-		 this->spital = s;
+	int getAniVechime() {
+		return this->aniVechime;
 	}
-	 void setSalariu(float s) {
-		 this->salariu = s;
-	 }
-	 void setAniVechime(int a) {
-		 this->aniVechime = a;
-	 }
+	void setNume(string nume) {
+		this->nume = nume;
+	}
+	void setSpecializare(const char* specializare) {
+		if (this->specializare != NULL)
+		{
+			delete[]this->specializare;
+		}
+		this->specializare = new char[strlen(specializare) + 1];
+		strcpy_s(this->specializare, strlen(specializare) + 1, specializare);
+	}
+	void setSpital(Spital s) {
+		this->spital = s;
+	}
+	void setSalariu(float s) {
+		this->salariu = s;
+	}
+	void setAniVechime(int a) {
+		this->aniVechime = a;
+	}
 	Doctor() :anNastere(1978) {
 		this->nume = "Popescu";
-		this->spital =spital;
+		this->spital = spital;
 		this->salariu = 12000;
 		this->specializare = new char[strlen("Cardiologie") + 1];
 		strcpy_s(this->specializare, strlen("Cardiologie") + 1, "Cardiologie");
 		this->aniVechime = 15;
 	}
-	Doctor(string nume,const char* specializare,const int an) :anNastere(an) {
+	Doctor(string nume, const char* specializare, const int an) :anNastere(an) {
 		this->nume = nume;
 		this->spital = spital;
 		this->salariu = 10000;
@@ -638,36 +736,36 @@ public:
 		strcpy_s(this->specializare, strlen(specializare) + 1, specializare);
 		this->aniVechime = 7;
 	}
-	Doctor(const Doctor& d):anNastere(d.anNastere) {
+	Doctor(const Doctor& d) :anNastere(d.anNastere) {
 		this->nume = d.nume;
 		this->spital = d.spital;
 		this->salariu = d.salariu;
 		this->specializare = new char[strlen(d.specializare) + 1];
 		strcpy_s(this->specializare, strlen(d.specializare) + 1, d.specializare);
 		this->aniVechime = d.aniVechime;
-		
+
 	}
 	//operatori
 	friend istream& operator>>(istream& citire, Doctor& d) {
-		cout << "Nume:";citire >> d.nume;
+		cout << "Nume:"; citire >> d.nume;
 		cout << "Spitalul la care lucreaza:"; citire >> d.spital;
 		cout << "Salariul:"; citire >> d.salariu;
-		cout << "Specializare:"; 
-		if(d.specializare!=NULL){
-		delete[]d.specializare;
+		cout << "Specializare:";
+		if (d.specializare != NULL) {
+			delete[]d.specializare;
 		}
 		d.specializare = new char[strlen(d.specializare) + 1];
-		cin>>d.specializare;
+		cin >> d.specializare;
 		cout << "Ani vechime:"; citire >> d.aniVechime;
 		return citire;
 	}
 	friend ostream& operator<<(ostream& scrie, const Doctor& d) {
-		scrie << "Nume:" << d.nume << endl;
-		scrie << "Spitalul la care lucreaza:\n" << d.spital << endl;
-		scrie << "Anul nasterii:" << d.anNastere << endl;
-		scrie << "Salariul:" << d.salariu<< endl;
-		scrie << "Specializare:" << d.specializare << endl;
-		scrie << "Anii vechime:" << d.aniVechime << " ani" << endl;
+		scrie <<"Nume:" << d.nume << endl;
+		scrie <<"Spital:" << d.spital << endl;
+		scrie <<"Anul nasterii:" << d.anNastere << endl;
+		scrie <<"Salariul:" << d.salariu << endl;
+		scrie <<"Specializare:" << d.specializare << endl;
+		scrie  <<"Ani vechime:" << d.aniVechime << endl;
 		return scrie;
 	}
 	Doctor& operator=(const Doctor& doctor) {
@@ -682,6 +780,48 @@ public:
 		}
 
 	}
+	//metoda pentru a citi din fisier binar
+	void citesteInFisBinar(fstream& f) {
+		int sizeOfNume = this->nume.length();
+		f.write((char*)&sizeOfNume, sizeof(int));
+		for (int i = 0; i < sizeOfNume; i++) {
+			f.write((char*)&this->nume[i], sizeof(char));
+		}
+		
+		f.write((char*)&spital, sizeof(Spital));
+		f.write((char*)&anNastere, sizeof(int));
+		f.write((char*)&salariu, sizeof(float));
+		int sizeOfSpecializare = strlen(this->specializare);
+		f.write((char*)&sizeOfSpecializare, sizeof(int));
+		for (int i = 0; i < sizeOfSpecializare; i++) {
+			f.write((char*)&this->specializare[i], sizeof(char));
+		}
+		f.write((char*)&aniVechime, sizeof(int));
+		
+
+	}
+	void citesteDinFisBinar(fstream& f) {
+		int sizeOfNume; 
+		f.read((char*)&sizeOfNume, sizeof(int));
+		for (int i = 0; i < sizeOfNume; i++) {
+			f.read((char*)&this->nume[i], sizeof(char));
+		}
+		this->nume[sizeOfNume] = '\0';
+		int val = 0;
+		f.read((char*)&spital, sizeof(Spital));
+		f.read((char*)&val, sizeof(int));
+		f.read((char*)&salariu, sizeof(float));
+		int sizeOfSpecializare;
+		f.read((char*)&sizeOfSpecializare, sizeof(int));
+		for (int i = 0; i < sizeOfSpecializare; i++) {
+			f.read((char*)&this->specializare[i], sizeof(char));
+		}
+		this->specializare[sizeOfSpecializare] = '\0';
+		f.read((char*)&aniVechime, sizeof(int));
+		
+
+	}
+
 	~Doctor() {
 		if (specializare != NULL) {
 			delete[]this->specializare;
@@ -905,28 +1045,75 @@ void main() {
 			cout << "************************************************************************" << endl;
 		}
 	}
-Doctor d1;
-cout <<"obiectul d1:"<< d1 << endl;
-Doctor d2;
-cin >> d2;
-cout <<"obiectul d2:"<< d2 << endl;
-Doctor d3("Vasilescu", "Pneumologie", 1980);
-cout << "obiectul d3:"<<endl << d3 << endl;
-Doctor d4;
-cout << "obiectul d4:" << endl<<d4<< endl;
-d4 = d3;
-cout << "obiectul d4 dupa utilizarea operatorului =:"<<endl << d4 << endl;
-Doctor d5=d3;
-cout << "obiectul d5 dupa construirea cu ajutorului constructorului de copiere:"<<endl << d5 << endl;
-cout << endl << "VERIFICARE GETTERI:" << endl;
-cout << d1.getNume() << "|" << d1.getSpital() << "|" << d1.getAnNastere() << "|" << d1.getSalariu() << "|";
-cout<< d1.getAniVechime() << "|"<<d1.getSpecializare()<<endl;
-cout << "VERIFICARE SETTERI:" << endl;
-d4.setNume("Opincariu");
-d4.setAniVechime(8);
-d4.setSpecializare("Oncologie");
-d4.setSalariu(12330);
-Spital s10(2000,12,9); //anul infintarii este de tip const ceea ce inseamna ca valoarea primului parametru va fi inutila pt setter
-d4.setSpital(s10);
-cout << "d4 dupa setteri:" << endl << d4;
+	Doctor d1;
+	cout << "obiectul d1:" << d1 << endl;
+	Doctor d2;
+	cin >> d2;
+	cout << "obiectul d2:" << d2 << endl;
+	Doctor d3("Vasilescu", "Pneumologie", 1980);
+	cout << "obiectul d3:" << endl << d3 << endl;
+	Doctor d4;
+	cout << "obiectul d4:" << endl << d4 << endl;
+	d4 = d3;
+	cout << "obiectul d4 dupa utilizarea operatorului =:" << endl << d4 << endl;
+	Doctor d5 = d3;
+	cout << "obiectul d5 dupa construirea cu ajutorului constructorului de copiere:" << endl << d5 << endl;
+	cout << endl << "VERIFICARE GETTERI:" << endl;
+	cout << d1.getNume() << "|" << d1.getSpital() << "|" << d1.getAnNastere() << "|" << d1.getSalariu() << "|";
+	cout << d1.getAniVechime() << "|" << d1.getSpecializare() << endl;
+	cout << "VERIFICARE SETTERI:" << endl;
+	d4.setNume("Opincariu");
+	d4.setAniVechime(8);
+	d4.setSpecializare("Oncologie");
+	d4.setSalariu(12330);
+	Spital s10(2000, 12, 9); //anul infintarii este de tip const ceea ce inseamna ca valoarea primului parametru va fi inutila pt setter
+	d4.setSpital(s10);
+	cout << "d4 dupa setteri:" << endl << d4;
+	//scriere in fisier text pentru clasa medicament
+	Medicament m10;
+	//cin >> m10;
+	ofstream file("fisierM.txt", ios::out);
+	file << m10;
+	//scriere in fisier text pentru clasa spital
+	Spital s11;
+	//cin >> s11;
+	ofstream f("fisierS.txt", ios::out);
+	f << s11;
+	//citire din fisierul text pentru clasa spital
+	ifstream citeste("fisierS.txt", ios::in);
+	Spital s12;
+	citeste >> s12;
+	cout << s12;
+	//citire din fisierul text pentru clasa medicament
+	ifstream citire("fisierM.txt", ios::in);
+	Medicament m11;
+	citire >> m11;
+	cout << m11;
+	//scriere in fisier binar pentru clasa echipamentMedical
+	fstream fis("FisierBinar.echMed",ios::binary|ios::out);
+	echipamentMedical e10;
+	e10.citesteInFisBinar(fis);
+	fis.close();
+	cout << endl;
+	//citire din fisier binar pentru clasa echipamentMedical
+	fstream fi("FisierBinar.echMed", ios::binary | ios::in);
+	echipamentMedical e11;
+	e11.citesteDinFisBinar(fi);
+	cout << e11;
+	fi.close();
+	//scriere in fisier binar pentru clasa Doctor
+	fstream fisier("FisierBinar.doctor", ios::binary | ios::out);
+	Doctor d10;
+	d10.citesteInFisBinar(fisier);
+	fisier.close();
+	cout << endl;
+	/*citire din fisier binar pentru clasa Doctor
+	fstream fisie("FisierBinar.doctor", ios::binary | ios::in);
+	Doctor d11;
+	d11.citesteDinFisBinar(fisie);
+	cout << d11;
+	fisie.close();*/
+
+
+
 }
