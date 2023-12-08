@@ -149,11 +149,11 @@ public:
 	}
 	//scriere in fisier
 	friend ofstream& operator<<(ofstream& scrie, const Spital& s) {
-		scrie <<  s.nume << endl;
-		scrie <<s.anInfiintare << endl;
+		scrie << s.nume << endl;
+		scrie << s.anInfiintare << endl;
 		scrie << s.nrPaturi << endl;
 		scrie << s.nrPacienti << endl;
-		scrie  << s.nrSectiiATI << endl;
+		scrie << s.nrSectiiATI << endl;
 		scrie << s.localitate << endl;
 		scrie << endl;
 		return scrie;
@@ -163,7 +163,7 @@ public:
 		citeste >> s.nume;
 		float val = 0;
 		citeste >> val; //pt an infiintare care e tip de const int
-		citeste >>s.nrPaturi;
+		citeste >> s.nrPaturi;
 		citeste >> s.nrPacienti;
 		citeste >> val; //pt nrSectiiATI care e de tip static
 		citeste >> s.localitate;
@@ -186,6 +186,97 @@ void paturiNecesare(Spital y) {
 	}
 }
 int Spital::nrSectiiATI = 1;
+class SpitalPsihiatrie : public Spital {
+private:
+	char* numeDirector;
+	int nrPsihiatrii;
+	int nrTerapii;
+public:
+	char* getNumeDirector() {
+		return this->numeDirector;
+	}
+	int getNrPsihiatrii() {
+		return this->nrPsihiatrii;
+	}
+	int getNrTerapii() {
+		return this->nrTerapii;
+	}
+	void setNumeDirector(const char* numeDirector) {
+		if (this->numeDirector != NULL)
+		{
+			delete[]this->numeDirector;
+		}
+		this->numeDirector = new char[strlen(numeDirector) + 1];
+		strcpy_s(this->numeDirector, strlen(numeDirector) + 1, numeDirector);
+	}
+	void setNrPsihiatrii(int nrPsihiatrii) {
+		if (nrPsihiatrii > 0)
+			this->nrPsihiatrii = nrPsihiatrii;
+	}
+	void setNrTerapii(int nrTerapii) {
+		if (nrTerapii > 0)
+			this->nrTerapii = nrTerapii;
+	}
+
+	SpitalPsihiatrie() :Spital("Obregia",1960,60,34,"Bucuresti") {
+		this->numeDirector = new char[strlen("Popescu") + 1];
+		strcpy_s(this->numeDirector, strlen("Popescu") + 1, "Popescu");
+		this->nrPsihiatrii = 12;
+		this->nrTerapii = 3;
+	}
+	SpitalPsihiatrie(int nrPsihiatrii, int nrTerapii,const char* numeDirector) :Spital() {
+		this->numeDirector = new char[strlen(numeDirector) + 1];
+		strcpy_s(this->numeDirector, strlen(numeDirector) + 1, numeDirector);
+		this->nrPsihiatrii = nrPsihiatrii;
+		this->nrTerapii = nrTerapii;
+	}
+	SpitalPsihiatrie(string nume, const int an, int nrPaturi, int nrPacienti, const char* localitate,const char* numeDirector,
+		int nrPsihiatrii,int nrTerapii) :Spital(nume,an,nrPaturi,nrPacienti,localitate) {
+		this->numeDirector = new char[strlen(numeDirector) + 1];
+		strcpy_s(this->numeDirector, strlen(numeDirector) + 1, numeDirector);
+		this->nrPsihiatrii = nrPsihiatrii;
+		this->nrTerapii = nrTerapii;
+	}
+	SpitalPsihiatrie(const SpitalPsihiatrie& sp) :Spital(sp) {
+		this->numeDirector = new char[strlen(sp.numeDirector) + 1];
+		strcpy_s(this->numeDirector, strlen(sp.numeDirector) + 1, sp.numeDirector);
+		this->nrPsihiatrii = sp.nrPsihiatrii;
+		this->nrTerapii = sp.nrTerapii;
+	}
+	SpitalPsihiatrie& operator=(const SpitalPsihiatrie& sp) {
+
+        if (this != &sp) {
+            Spital::operator=(sp);
+			if (this->numeDirector != NULL) {
+			delete[]this->numeDirector;
+		}
+          this->numeDirector = new char[strlen(sp.numeDirector) + 1];
+		strcpy_s(this->numeDirector, strlen(sp.numeDirector) + 1, sp.numeDirector);
+		this->nrPsihiatrii = sp.nrPsihiatrii;
+		this->nrTerapii = sp.nrTerapii;
+        }
+        return *this;
+    }
+
+    friend ostream& operator<<(ostream& scrie, const SpitalPsihiatrie& sp) {
+        scrie << (Spital)sp;
+        scrie << "Nume director spital: " << sp.numeDirector << endl;
+        scrie << "Numar psihiatrii: " << sp.nrPsihiatrii << endl;
+        scrie << "Numar terapii utilizate:"<<sp.nrTerapii<<endl;
+        scrie<< endl;
+
+        return scrie;
+    }
+	~SpitalPsihiatrie(){
+		if (numeDirector != NULL) {
+			delete[]this->numeDirector;
+		}
+		
+	}
+
+
+
+};
 class echipamentMedical {
 private:
 	string nume;
@@ -405,7 +496,7 @@ public:
 	}
 	//metoda pentru a citi dintr un fisier binar
 	void citesteDinFisBinar(fstream& f) {
-		int sizeOfNume; 
+		int sizeOfNume;
 		f.read((char*)&sizeOfNume, sizeof(int));
 		for (int i = 0; i < sizeOfNume; i++) {
 			f.read((char*)&this->nume[i], sizeof(char));
@@ -642,7 +733,7 @@ public:
 		scrie << m.TVA << endl;
 		scrie << m.prescriptieMedicala << endl;
 		scrie << m.nrFarmaciiPartenere << endl;
-		scrie << m.termenValabilitate<<endl;
+		scrie << m.termenValabilitate << endl;
 		return scrie;
 	}
 	//operator citire din fisier
@@ -655,12 +746,12 @@ public:
 		citeste >> m.denumire;
 		citeste >> m.modDeAdministrare;
 		citeste >> m.pretIntreg;
-		citeste>> m.reducere;
+		citeste >> m.reducere;
 		float val = 0;
 		citeste >> val;//pentru tva care e de tip static
 		citeste >> m.prescriptieMedicala;
 		citeste >> m.nrFarmaciiPartenere;
-	    citeste >> val; //pentru termenValabilitate care e de tip const int
+		citeste >> val; //pentru termenValabilitate care e de tip const int
 		return citeste;
 	}
 	//funct de acc var static
@@ -670,6 +761,93 @@ public:
 	friend void pretRedus(Medicament x);
 };
 float Medicament::TVA = 0.09;
+class Pastila:public Medicament {
+private:
+	string substantaActiva;
+	int nrComprimateZi;
+	char* scop;
+public:
+	string getSubstantaActiva() {
+		return this->substantaActiva;
+	}
+	int getNrComprimateZi() {
+		return this->nrComprimateZi;
+	}
+	char* getScop() {
+		return this->scop;
+	}
+	void setSubstantaActiva(string substantaActiva) {
+		if (substantaActiva.length() > 3) {
+			this->substantaActiva = substantaActiva;
+		}
+	}
+	void setNrComprimateZi(int nrComprimateZi) {
+		if (nrComprimateZi > 0 && nrComprimateZi < 7) {
+			this->nrComprimateZi = nrComprimateZi;
+		}
+	}
+	void setScop(const char* scop) {
+		if (this->scop != NULL) {
+			delete[]this->scop;
+		}
+		this->scop = new char[strlen(scop) + 1];
+		strcpy_s(this->scop, strlen(scop) + 1, scop);
+	}
+	Pastila() :Medicament("Parasinus", 23, 0, 50) {
+		this->substantaActiva = "Paracetamol";
+		this->nrComprimateZi = 3;
+		this->scop = new char[strlen("raceala") + 1];
+		strcpy_s(this->scop, strlen("raceala") + 1, "raceala");
+	}
+	Pastila(string substantaActiva, int nrComprimateZi, const char* scop) :Medicament() {
+		this->substantaActiva = substantaActiva;
+		this->nrComprimateZi = nrComprimateZi;
+		this->scop = new char[strlen(scop) + 1];
+		strcpy_s(this->scop, strlen(scop) + 1, scop);
+
+	}
+	Pastila(string modDeAdministrare, float pretIntreg, float reducere, bool prescriptieMedicala,
+		int nrFarmaciiPartenere, const int termenV,string substantaActiva, 
+		int nrComprimateZi, const char* scop) :Medicament( modDeAdministrare, pretIntreg,reducere,
+		prescriptieMedicala,nrFarmaciiPartenere,termenV) {
+		this->substantaActiva = substantaActiva;
+		this->nrComprimateZi = nrComprimateZi;
+		this->scop = new char[strlen(scop) + 1];
+		strcpy_s(this->scop, strlen(scop) + 1, scop);
+
+	}
+	Pastila(const Pastila& p):Medicament(p) {
+		this->substantaActiva = p.substantaActiva;
+		this->nrComprimateZi = p.nrComprimateZi;
+		this->scop = new char[strlen(p.scop) + 1];
+		strcpy_s(this->scop, strlen(p.scop) + 1, p.scop);
+	}
+	Pastila operator=(const Pastila& p) {
+		if (this != &p) {
+			Medicament::operator=(p);
+			this->substantaActiva = p.substantaActiva;
+			this->nrComprimateZi = p.nrComprimateZi;
+			if (this->scop != NULL) {
+				delete[]this->scop;
+			}
+			this->scop = new char[strlen(p.scop) + 1];
+			strcpy_s(this->scop, strlen(p.scop) + 1, p.scop);
+		}
+		return *this;
+	}
+	friend ostream& operator <<(ostream& scrie, const Pastila& p) {
+		scrie << (Medicament)p;
+		scrie << "Substanta activa:" << p.substantaActiva << endl;
+		scrie << "Numar comprimate pe zi:" << p.nrComprimateZi << endl;
+		scrie << "Folosita pentru tratare:" << p.scop << endl;
+		return scrie;
+	}
+	~Pastila() {
+		if (scop != NULL) {
+			delete[]this->scop;
+		}
+	}
+};
 //noua clasa
 class Doctor {
 private:
@@ -760,12 +938,12 @@ public:
 		return citire;
 	}
 	friend ostream& operator<<(ostream& scrie, const Doctor& d) {
-		scrie <<"Nume:" << d.nume << endl;
-		scrie <<"Spital:" << d.spital << endl;
-		scrie <<"Anul nasterii:" << d.anNastere << endl;
-		scrie <<"Salariul:" << d.salariu << endl;
-		scrie <<"Specializare:" << d.specializare << endl;
-		scrie  <<"Ani vechime:" << d.aniVechime << endl;
+		scrie << "Nume:" << d.nume << endl;
+		scrie << "Spital:" << d.spital << endl;
+		scrie << "Anul nasterii:" << d.anNastere << endl;
+		scrie << "Salariul:" << d.salariu << endl;
+		scrie << "Specializare:" << d.specializare << endl;
+		scrie << "Ani vechime:" << d.aniVechime << endl;
 		return scrie;
 	}
 	Doctor& operator=(const Doctor& doctor) {
@@ -787,7 +965,7 @@ public:
 		for (int i = 0; i < sizeOfNume; i++) {
 			f.write((char*)&this->nume[i], sizeof(char));
 		}
-		
+
 		f.write((char*)&spital, sizeof(Spital));
 		f.write((char*)&anNastere, sizeof(int));
 		f.write((char*)&salariu, sizeof(float));
@@ -797,11 +975,11 @@ public:
 			f.write((char*)&this->specializare[i], sizeof(char));
 		}
 		f.write((char*)&aniVechime, sizeof(int));
-		
+
 
 	}
 	void citesteDinFisBinar(fstream& f) {
-		int sizeOfNume; 
+		int sizeOfNume;
 		f.read((char*)&sizeOfNume, sizeof(int));
 		for (int i = 0; i < sizeOfNume; i++) {
 			f.read((char*)&this->nume[i], sizeof(char));
@@ -818,7 +996,7 @@ public:
 		}
 		this->specializare[sizeOfSpecializare] = '\0';
 		f.read((char*)&aniVechime, sizeof(int));
-		
+
 
 	}
 
@@ -1090,7 +1268,7 @@ void main() {
 	citire >> m11;
 	cout << m11;
 	//scriere in fisier binar pentru clasa echipamentMedical
-	fstream fis("FisierBinar.echMed",ios::binary|ios::out);
+	fstream fis("FisierBinar.echMed", ios::binary | ios::out);
 	echipamentMedical e10;
 	e10.citesteInFisBinar(fis);
 	fis.close();
@@ -1113,7 +1291,44 @@ void main() {
 	d11.citesteDinFisBinar(fisie);
 	cout << d11;
 	fisie.close();*/
-
-
-
-}
+cout << "Verificare clasa SpitalPsihiatrie:" << endl;
+ SpitalPsihiatrie sp1;
+ cout <<"Obiectul sp1:"<<endl<< sp1 << endl;
+ SpitalPsihiatrie sp2("Socola",1950,80,40,"Iasi","Chiriac",34,5);
+ cout << "Obiectul sp2:" <<endl<< sp2 << endl;
+ SpitalPsihiatrie sp3(19, 3, "Pavel");
+ cout << "Obiectul sp3:" << endl<< sp3 << endl;
+ SpitalPsihiatrie sp4=sp3;
+ cout << "Obiectul sp4:" <<endl<< sp4 << endl;
+ sp3 = sp2;
+ cout << "Obiectul sp3 dupa aplicarea operatorului = :"<<endl << sp3 << endl;
+ cout << endl << "VERIFICARE GETTERI SI SETTERI(se face doar pentru atributele proprii):"<<endl;
+ cout << "getteri:" << endl;
+ cout << sp1.getNumeDirector()<<"|"<<sp1.getNrPsihiatrii()<<" psihiatrii |"<<sp1.getNrTerapii()<<" terapii" << endl;
+ cout << "setteri:"<<endl;
+ sp1.setNumeDirector("Ionescu");
+ sp1.setNrPsihiatrii(15);
+ sp1.setNrTerapii(2);
+ cout << sp1.getNumeDirector() << "|" << sp1.getNrPsihiatrii() << " psihiatrii |" << sp1.getNrTerapii() << " terapii" << endl;
+ cout << endl<<"Verificare clasa Pastila:" << endl;
+ Pastila p1;
+ cout <<"Obiectul p1:"<<endl<< p1 << endl;
+ Pastila p2("Oral", 40, 0.2, 0, 39, 7, "Vitamina C", 2, "Imunitate");
+ cout << "Obiectul p2:"<<endl<<p2 << endl;
+ Pastila p3("Ibuprofen", 3, "Dureri");
+ cout <<"Obiectul p3:"<<endl<< p3<<endl;
+ Pastila p4 = p2;
+ cout <<"Obiectul p4 care a fost creat cu ajutorul constructorului de copiere:"<<endl<< p4 << endl;
+ p2 = p1;
+ cout <<"Obiectul p2 dupa utilizarea operatorului =:"<<endl<< p2 << endl;
+ cout << endl << "VERIFICARE GETTERI SI SETTERI(se face doar pentru atributele proprii):" << endl;
+ cout << p1.getSubstantaActiva() << "|" << p1.getNrComprimateZi() << " pastile|" << p1.getScop() << endl;
+ p2.setSubstantaActiva("Desloratadina");
+ p2.setNrComprimateZi(5);
+ p2.setScop("Alergie");
+ cout << p2.getSubstantaActiva() << "|" << p2.getNrComprimateZi() << " pastile|" << p2.getScop() << endl;
+ //upcasting
+ Medicament* m15; 
+ m15 = &p2;
+ cout <<endl<< *m15;
+} 
