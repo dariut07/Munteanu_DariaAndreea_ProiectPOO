@@ -2,15 +2,36 @@
 #include<fstream>
 using namespace std;
 //domeniul ales este MeDicina
-class Spital {
+class Cladire {
+private:
+	string numeStradaCladire;
+	int suprafata;
+public:
+	virtual int nrPacientiSiDoctori() = 0;
+	Cladire() {
+		numeStradaCladire = "Stejarului";
+		suprafata = 500;
+	}
+	virtual ~Cladire() {
+
+	}
+
+};
+class Spital: public Cladire {
 private:
 	string nume;
 	const int anInfiintare;
 	int nrPaturi;
+protected:
 	int nrPacienti;
+private:
 	static int nrSectiiATI;
 	char* localitate;
 public:
+	//presupunem ca la fiecare 5 pacienti exista un doctor
+	virtual int nrPacientiSiDoctori() {
+		return nrPacienti + int(nrPacienti/5);
+	}
 	//getteri:
 	string getNume() {
 		return this->nume;
@@ -192,6 +213,9 @@ private:
 	int nrPsihiatrii;
 	int nrTerapii;
 public:
+	int nrPacientiSiDoctori() {
+		return this->nrPacienti + nrPsihiatrii;
+	}
 	char* getNumeDirector() {
 		return this->numeDirector;
 	}
@@ -218,20 +242,20 @@ public:
 			this->nrTerapii = nrTerapii;
 	}
 
-	SpitalPsihiatrie() :Spital("Obregia",1960,60,34,"Bucuresti") {
+	SpitalPsihiatrie() :Spital("Obregia", 1960, 60, 34, "Bucuresti") {
 		this->numeDirector = new char[strlen("Popescu") + 1];
 		strcpy_s(this->numeDirector, strlen("Popescu") + 1, "Popescu");
 		this->nrPsihiatrii = 12;
 		this->nrTerapii = 3;
 	}
-	SpitalPsihiatrie(int nrPsihiatrii, int nrTerapii,const char* numeDirector) :Spital() {
+	SpitalPsihiatrie(int nrPsihiatrii, int nrTerapii, const char* numeDirector) :Spital() {
 		this->numeDirector = new char[strlen(numeDirector) + 1];
 		strcpy_s(this->numeDirector, strlen(numeDirector) + 1, numeDirector);
 		this->nrPsihiatrii = nrPsihiatrii;
 		this->nrTerapii = nrTerapii;
 	}
-	SpitalPsihiatrie(string nume, const int an, int nrPaturi, int nrPacienti, const char* localitate,const char* numeDirector,
-		int nrPsihiatrii,int nrTerapii) :Spital(nume,an,nrPaturi,nrPacienti,localitate) {
+	SpitalPsihiatrie(string nume, const int an, int nrPaturi, int nrPacienti, const char* localitate, const char* numeDirector,
+		int nrPsihiatrii, int nrTerapii) :Spital(nume, an, nrPaturi, nrPacienti, localitate) {
 		this->numeDirector = new char[strlen(numeDirector) + 1];
 		strcpy_s(this->numeDirector, strlen(numeDirector) + 1, numeDirector);
 		this->nrPsihiatrii = nrPsihiatrii;
@@ -245,33 +269,33 @@ public:
 	}
 	SpitalPsihiatrie& operator=(const SpitalPsihiatrie& sp) {
 
-        if (this != &sp) {
-            Spital::operator=(sp);
+		if (this != &sp) {
+			Spital::operator=(sp);
 			if (this->numeDirector != NULL) {
-			delete[]this->numeDirector;
+				delete[]this->numeDirector;
+			}
+			this->numeDirector = new char[strlen(sp.numeDirector) + 1];
+			strcpy_s(this->numeDirector, strlen(sp.numeDirector) + 1, sp.numeDirector);
+			this->nrPsihiatrii = sp.nrPsihiatrii;
+			this->nrTerapii = sp.nrTerapii;
 		}
-          this->numeDirector = new char[strlen(sp.numeDirector) + 1];
-		strcpy_s(this->numeDirector, strlen(sp.numeDirector) + 1, sp.numeDirector);
-		this->nrPsihiatrii = sp.nrPsihiatrii;
-		this->nrTerapii = sp.nrTerapii;
-        }
-        return *this;
-    }
+		return *this;
+	}
 
-    friend ostream& operator<<(ostream& scrie, const SpitalPsihiatrie& sp) {
-        scrie << (Spital)sp;
-        scrie << "Nume director spital: " << sp.numeDirector << endl;
-        scrie << "Numar psihiatrii: " << sp.nrPsihiatrii << endl;
-        scrie << "Numar terapii utilizate:"<<sp.nrTerapii<<endl;
-        scrie<< endl;
+	friend ostream& operator<<(ostream& scrie, const SpitalPsihiatrie& sp) {
+		scrie << (Spital)sp;
+		scrie << "Nume director spital: " << sp.numeDirector << endl;
+		scrie << "Numar psihiatrii: " << sp.nrPsihiatrii << endl;
+		scrie << "Numar terapii utilizate:" << sp.nrTerapii << endl;
+		scrie << endl;
 
-        return scrie;
-    }
-	~SpitalPsihiatrie(){
+		return scrie;
+	}
+	~SpitalPsihiatrie() {
 		if (numeDirector != NULL) {
 			delete[]this->numeDirector;
 		}
-		
+
 	}
 
 
@@ -533,17 +557,37 @@ public:
 
 };
 int echipamentMedical::perioadaGarantie = 2;
-class Medicament {
+class ProdusFarmaceutic {
+private:
+	string producator;
+	int unitatiPerLot;
+public:
+	virtual float sumaIncasata() = 0;
+	ProdusFarmaceutic() {
+		producator = "SunWave Pharma";
+		unitatiPerLot = 50;
+	}
+	~ProdusFarmaceutic() {
+	};
+
+};
+class Medicament:public ProdusFarmaceutic {
 private:
 	char* denumire;
 	string modDeAdministrare;
+protected:
 	float pretIntreg;
 	float reducere; //medicamente compensate
 	static float TVA;
+private:
 	bool prescriptieMedicala;
 	int nrFarmaciiPartenere;
 	const int termenValabilitate; //masurat in luni
 public:
+	virtual float sumaIncasata()  {
+		return pretIntreg+pretIntreg*TVA-pretIntreg*reducere;
+	}
+
 	char* getDenumire() {
 		return this->denumire;
 
@@ -586,7 +630,7 @@ public:
 		}
 	}
 	void setReducere(float reducere) {
-		if (reducere > -1) {
+		if (reducere >= 0 && reducere <=1) {
 			this->reducere = reducere;
 		}
 	}
@@ -761,12 +805,15 @@ public:
 	friend void pretRedus(Medicament x);
 };
 float Medicament::TVA = 0.09;
-class Pastila:public Medicament {
+class Pastila :public Medicament {
 private:
 	string substantaActiva;
 	int nrComprimateZi;
 	char* scop;
 public:
+	float sumaIncasata() {
+		return (this->pretIntreg + this->pretIntreg* Medicament::TVA - this->pretIntreg * this->reducere)/this->nrComprimateZi;
+	}
 	string getSubstantaActiva() {
 		return this->substantaActiva;
 	}
@@ -807,16 +854,16 @@ public:
 
 	}
 	Pastila(string modDeAdministrare, float pretIntreg, float reducere, bool prescriptieMedicala,
-		int nrFarmaciiPartenere, const int termenV,string substantaActiva, 
-		int nrComprimateZi, const char* scop) :Medicament( modDeAdministrare, pretIntreg,reducere,
-		prescriptieMedicala,nrFarmaciiPartenere,termenV) {
+		int nrFarmaciiPartenere, const int termenV, string substantaActiva,
+		int nrComprimateZi, const char* scop) :Medicament(modDeAdministrare, pretIntreg, reducere,
+			prescriptieMedicala, nrFarmaciiPartenere, termenV) {
 		this->substantaActiva = substantaActiva;
 		this->nrComprimateZi = nrComprimateZi;
 		this->scop = new char[strlen(scop) + 1];
 		strcpy_s(this->scop, strlen(scop) + 1, scop);
 
 	}
-	Pastila(const Pastila& p):Medicament(p) {
+	Pastila(const Pastila& p) :Medicament(p) {
 		this->substantaActiva = p.substantaActiva;
 		this->nrComprimateZi = p.nrComprimateZi;
 		this->scop = new char[strlen(p.scop) + 1];
@@ -1291,44 +1338,74 @@ void main() {
 	d11.citesteDinFisBinar(fisie);
 	cout << d11;
 	fisie.close();*/
-cout << "Verificare clasa SpitalPsihiatrie:" << endl;
- SpitalPsihiatrie sp1;
- cout <<"Obiectul sp1:"<<endl<< sp1 << endl;
- SpitalPsihiatrie sp2("Socola",1950,80,40,"Iasi","Chiriac",34,5);
- cout << "Obiectul sp2:" <<endl<< sp2 << endl;
- SpitalPsihiatrie sp3(19, 3, "Pavel");
- cout << "Obiectul sp3:" << endl<< sp3 << endl;
- SpitalPsihiatrie sp4=sp3;
- cout << "Obiectul sp4:" <<endl<< sp4 << endl;
- sp3 = sp2;
- cout << "Obiectul sp3 dupa aplicarea operatorului = :"<<endl << sp3 << endl;
- cout << endl << "VERIFICARE GETTERI SI SETTERI(se face doar pentru atributele proprii):"<<endl;
- cout << "getteri:" << endl;
- cout << sp1.getNumeDirector()<<"|"<<sp1.getNrPsihiatrii()<<" psihiatrii |"<<sp1.getNrTerapii()<<" terapii" << endl;
- cout << "setteri:"<<endl;
- sp1.setNumeDirector("Ionescu");
- sp1.setNrPsihiatrii(15);
- sp1.setNrTerapii(2);
- cout << sp1.getNumeDirector() << "|" << sp1.getNrPsihiatrii() << " psihiatrii |" << sp1.getNrTerapii() << " terapii" << endl;
- cout << endl<<"Verificare clasa Pastila:" << endl;
- Pastila p1;
- cout <<"Obiectul p1:"<<endl<< p1 << endl;
- Pastila p2("Oral", 40, 0.2, 0, 39, 7, "Vitamina C", 2, "Imunitate");
- cout << "Obiectul p2:"<<endl<<p2 << endl;
- Pastila p3("Ibuprofen", 3, "Dureri");
- cout <<"Obiectul p3:"<<endl<< p3<<endl;
- Pastila p4 = p2;
- cout <<"Obiectul p4 care a fost creat cu ajutorul constructorului de copiere:"<<endl<< p4 << endl;
- p2 = p1;
- cout <<"Obiectul p2 dupa utilizarea operatorului =:"<<endl<< p2 << endl;
- cout << endl << "VERIFICARE GETTERI SI SETTERI(se face doar pentru atributele proprii):" << endl;
- cout << p1.getSubstantaActiva() << "|" << p1.getNrComprimateZi() << " pastile|" << p1.getScop() << endl;
- p2.setSubstantaActiva("Desloratadina");
- p2.setNrComprimateZi(5);
- p2.setScop("Alergie");
- cout << p2.getSubstantaActiva() << "|" << p2.getNrComprimateZi() << " pastile|" << p2.getScop() << endl;
- //upcasting
- Medicament* m15; 
- m15 = &p2;
- cout <<endl<< *m15;
-} 
+	cout << "Verificare clasa SpitalPsihiatrie:" << endl;
+	SpitalPsihiatrie sp1;
+	cout << "Obiectul sp1:" << endl << sp1 << endl;
+	SpitalPsihiatrie sp2("Socola", 1950, 80, 40, "Iasi", "Chiriac", 34, 5);
+	cout << "Obiectul sp2:" << endl << sp2 << endl;
+	SpitalPsihiatrie sp3(19, 3, "Pavel");
+	cout << "Obiectul sp3:" << endl << sp3 << endl;
+	SpitalPsihiatrie sp4 = sp3;
+	cout << "Obiectul sp4:" << endl << sp4 << endl;
+	sp3 = sp2;
+	cout << "Obiectul sp3 dupa aplicarea operatorului = :" << endl << sp3 << endl;
+	cout << endl << "VERIFICARE GETTERI SI SETTERI(se face doar pentru atributele proprii):" << endl;
+	cout << "getteri:" << endl;
+	cout << sp1.getNumeDirector() << "|" << sp1.getNrPsihiatrii() << " psihiatrii |" << sp1.getNrTerapii() << " terapii" << endl;
+	cout << "setteri:" << endl;
+	sp1.setNumeDirector("Ionescu");
+	sp1.setNrPsihiatrii(15);
+	sp1.setNrTerapii(2);
+	cout << sp1.getNumeDirector() << "|" << sp1.getNrPsihiatrii() << " psihiatrii |" << sp1.getNrTerapii() << " terapii" << endl;
+	cout << endl << "Verificare clasa Pastila:" << endl;
+	Pastila p1;
+	cout << "Obiectul p1:" << endl << p1 << endl;
+	Pastila p2("Oral", 40, 0.2, 0, 39, 7, "Vitamina C", 2, "Imunitate");
+	cout << "Obiectul p2:" << endl << p2 << endl;
+	Pastila p3("Ibuprofen", 3, "Dureri");
+	cout << "Obiectul p3:" << endl << p3 << endl;
+	Pastila p4 = p2;
+	cout << "Obiectul p4 care a fost creat cu ajutorul constructorului de copiere:" << endl << p4 << endl;
+	p2 = p1;
+	cout << "Obiectul p2 dupa utilizarea operatorului =:" << endl << p2 << endl;
+	cout << endl << "VERIFICARE GETTERI SI SETTERI(se face doar pentru atributele proprii):" << endl;
+	cout << p1.getSubstantaActiva() << "|" << p1.getNrComprimateZi() << " pastile|" << p1.getScop() << endl;
+	p2.setSubstantaActiva("Desloratadina");
+	p2.setNrComprimateZi(5);
+	p2.setScop("Alergie");
+	cout << p2.getSubstantaActiva() << "|" << p2.getNrComprimateZi() << " pastile|" << p2.getScop() << endl;
+	//upcasting
+	Medicament* m15;
+	m15 = &p2;
+	cout << endl << *m15;
+Cladire** pointerC;
+pointerC = new Cladire * [10];
+pointerC[0] = new Spital();
+pointerC[1] = new Spital(1930,34,89);
+pointerC[2] = new SpitalPsihiatrie(8,2,"Vasilescu");
+pointerC[3] = new SpitalPsihiatrie("Pantelimon",1980,87,67,"Bucuresti","Tudor",12,4);
+pointerC[4] = new Spital("Spitalul Militar",1920,109,80,"Craiova");
+pointerC[5] = new Spital(2004,200,125);
+pointerC[6] = new SpitalPsihiatrie(12,1,"Petrescu");
+pointerC[7] = new SpitalPsihiatrie();
+pointerC[8] = new Spital(1999,198,33);
+pointerC[9] = new SpitalPsihiatrie(12,3,"Pogor");
+cout << "Numar de pacienti si doctori:" << endl;
+for (int i = 0; i < 10; i++)
+	cout << pointerC[i]->nrPacientiSiDoctori() << " persoane" << endl;
+ProdusFarmaceutic** pointerPF;
+pointerPF = new ProdusFarmaceutic * [10];
+pointerPF[0] = new Medicament();
+pointerPF[1] = new Medicament("Oral",45,0,12);
+pointerPF[2] = new Pastila();
+pointerPF[3] = new Pastila("Aciclofenac",2,"Dureri musculare");
+pointerPF[4] = new Medicament("Amoxacilina","Oral",13,0,4);
+pointerPF[5] = new Medicament("Cetirizina",68,0,4);
+pointerPF[6] = new Pastila("Oral",98,0.2,1,76,9, "Vitamina C",4,"Imunitate");
+pointerPF[7] = new Pastila("Ciclopirox",3,"Fungi");
+pointerPF[8] = new Medicament("Dexametazona",34.5,1,88);
+pointerPF[9] = new Pastila("Hidrocortizon",1,"Antialergen");
+cout << "Sume incasate:" << endl;
+for (int i = 0; i < 10; i++)
+	cout << pointerPF[i]->sumaIncasata() <<" lei" << endl;
+}
