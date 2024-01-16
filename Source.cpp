@@ -750,7 +750,7 @@ public:
 	friend ostream& operator<<(ostream& scrie, const Medicament& m) {
 		scrie << "Denumire:" << m.denumire << endl;
 		scrie << "Mod de administrare:" << m.modDeAdministrare << endl;
-		scrie << "Pret intreg:" << m.reducere << endl;
+		scrie << "Pret intreg:" << m.pretIntreg<< endl;
 		scrie << "Reducere:" << m.reducere << endl;
 		scrie << "TVA:" << m.TVA << endl;
 		scrie << "Prescriptie medicala:" << m.prescriptieMedicala << endl;
