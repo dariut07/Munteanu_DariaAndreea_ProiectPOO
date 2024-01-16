@@ -1,0 +1,571 @@
+#include<iostream>
+using namespace std;
+//domeniul ales este MeDicina
+class Spital {
+private:
+	string nume;
+	const int anInfiintare;
+	int nrPaturi;
+	int nrPacienti;
+	static int nrSectiiATI;
+	char* localitate;
+public:
+	//getteri:
+	string getNume() {
+		return this->nume;
+	}
+	const int getAnInfiintare() {
+		return this->anInfiintare;
+	}
+	int getNrPaturi() {
+		return this->nrPaturi;
+	}
+	int getNrPacienti() {
+		return this->nrPacienti;
+	}
+	char* getLocalitate() {
+		return this->localitate;
+	}
+	//setteri
+	void setNume(string nume) {
+		if (nume.length() > 3) {             //validam input-ul
+			this->nume = nume;
+		}
+	}
+	void setNrPaturi(int nrPaturi) {
+		if (nrPaturi > 0) {
+			this->nrPaturi = nrPaturi;
+		}
+	}
+	void setNrPacienti(int nrPacienti) {
+		if (nrPacienti > 0) {
+			this->nrPacienti = nrPacienti;
+		}
+	}
+	void setLocalitate(const char* localitate) {
+		if (this->localitate != NULL)
+		{
+			delete[]this->localitate;
+		}
+		this->localitate = new char[strlen(localitate) + 1];
+		strcpy_s(this->localitate, strlen(localitate) + 1, localitate);
+	}
+	Spital() :anInfiintare(1988) {                  //Lista de initializare
+		this->nume = "Elias";
+		this->nrPaturi = 15;
+		this->nrPacienti = 8;
+		this->localitate = new char[strlen("Bucuresti") + 1];
+		strcpy_s(this->localitate, strlen("Bucuresti") + 1, "Bucuresti");
+	}
+	void afisare() {
+		cout << "nume:" << this->nume;
+		cout << "\nan infiintare:" << this->anInfiintare;
+		cout << "\nnrPacieti:" << this->nrPacienti;
+		cout << "\nnrPaturi:" << this->nrPaturi;
+		cout << "\nnr sectii ATI:" << this->nrSectiiATI;
+		cout << "\nlocalitate:" << this->localitate;
+		cout << endl;
+	}
+	Spital(string nume, const int an, int nrPaturi, int nrPacienti, const char* localitate) : anInfiintare(an) {
+		this->nume = nume;
+		this->nrPaturi = nrPaturi;
+		this->nrPacienti = nrPacienti;
+		this->localitate = new char[strlen(localitate) + 1];
+		strcpy_s(this->localitate, strlen(localitate) + 1, localitate);
+	}
+	Spital(const int an, int nrPaturi, int nrPacienti) :anInfiintare(an) {
+		this->nume = "Regina Maria";
+		this->nrPaturi = nrPaturi;
+		this->nrPacienti = nrPacienti;
+		this->localitate = new char[strlen("Bucuresti") + 1];
+		strcpy_s(this->localitate, strlen("Bucuresti") + 1, "Bucuresti");
+
+	}
+	//constructor de copiere
+	Spital(const Spital& spital) : anInfiintare(spital.anInfiintare) {
+		this->nume = spital.nume;
+		this->nrPaturi = spital.nrPaturi;
+		this->nrPacienti = spital.nrPacienti;
+
+		this->localitate = new char[strlen(spital.localitate) + 1];
+		strcpy_s(this->localitate, strlen(spital.localitate) + 1, spital.localitate);
+
+	}
+	//operatori
+	Spital& operator=(const Spital& spital) {      //1.1
+		if (this != &spital) {
+			this->nume = spital.nume;
+			this->nrPaturi = spital.nrPaturi;
+			this->nrPacienti = spital.nrPacienti;
+
+			if (this->localitate != NULL) {
+				delete[]this->localitate;
+			}
+
+			this->localitate = new char[strlen(spital.localitate) + 1];
+			strcpy_s(this->localitate, strlen(spital.localitate) + 1, spital.localitate);
+
+			return *this;
+		}
+	}
+	friend ostream& operator<<(ostream& scrie, const Spital& s) {  //1.2
+		scrie << "Nume:" << s.nume << endl;
+		scrie << "An infiintare:" << s.anInfiintare << endl;
+		scrie << "Numar paturi:" << s.nrPaturi << endl;
+		scrie << "Numar pacienti:" << s.nrPacienti << endl;
+		scrie << "Numar sectii ATI:" << s.nrSectiiATI << endl;
+		cout << "Localitate: " << s.localitate << endl;
+		cout << endl;
+		return scrie;
+	}
+	Spital operator++() {    //preincrementare   //1.3
+		this->nrPaturi += 7;
+		return *this;
+	}
+	Spital operator--() {      //1.4    
+		this->nrPacienti -= 5;
+		return *this;
+	}
+	friend istream& operator>>(istream& citeste, Spital& s) {
+		cout << "Nume:"; citeste >> s.nume;
+		cout << "Numar paturi:"; citeste >> s.nrPaturi;
+		cout << "Numar pacienti:"; citeste >> s.nrPacienti;
+		cout << "Localitate:";
+		if (s.localitate != NULL) {
+			delete[]s.localitate;
+		}
+		s.localitate = new char[strlen(s.localitate) + 1];
+		citeste >> s.localitate;
+		return citeste;
+	}
+	//destructor
+	~Spital() {
+		if (this->localitate != NULL)
+		{
+			delete[]this->localitate;
+			this->localitate = NULL;
+		}
+	}
+	static int getSectiiATI() {
+		return nrSectiiATI;
+	}
+	
+
+
+};
+int Spital::nrSectiiATI = 1;
+class SpitalPsihiatrie : public Spital {
+private:
+	char* numeDirector;
+	int nrPsihiatrii;
+	int nrTerapii;
+public:
+	char* getNumeDirector() {
+		return this->numeDirector;
+	}
+	int getNrPsihiatrii() {
+		return this->nrPsihiatrii;
+	}
+	int getNrTerapii() {
+		return this->nrTerapii;
+	}
+	void setNumeDirector(const char* numeDirector) {
+		if (this->numeDirector != NULL)
+		{
+			delete[]this->numeDirector;
+		}
+		this->numeDirector = new char[strlen(numeDirector) + 1];
+		strcpy_s(this->numeDirector, strlen(numeDirector) + 1, numeDirector);
+	}
+	void setNrPsihiatrii(int nrPsihiatrii) {
+		if (nrPsihiatrii > 0)
+			this->nrPsihiatrii = nrPsihiatrii;
+	}
+	void setNrTerapii(int nrTerapii) {
+		if (nrTerapii > 0)
+			this->nrTerapii = nrTerapii;
+	}
+
+	SpitalPsihiatrie() :Spital("Obregia", 1960, 60, 34, "Bucuresti") {
+		this->numeDirector = new char[strlen("Popescu") + 1];
+		strcpy_s(this->numeDirector, strlen("Popescu") + 1, "Popescu");
+		this->nrPsihiatrii = 12;
+		this->nrTerapii = 3;
+	}
+	SpitalPsihiatrie(int nrPsihiatrii, int nrTerapii, const char* numeDirector) :Spital() {
+		this->numeDirector = new char[strlen(numeDirector) + 1];
+		strcpy_s(this->numeDirector, strlen(numeDirector) + 1, numeDirector);
+		this->nrPsihiatrii = nrPsihiatrii;
+		this->nrTerapii = nrTerapii;
+	}
+	SpitalPsihiatrie(string nume, const int an, int nrPaturi, int nrPacienti, const char* localitate, const char* numeDirector,
+		int nrPsihiatrii, int nrTerapii) :Spital(nume, an, nrPaturi, nrPacienti, localitate) {
+		this->numeDirector = new char[strlen(numeDirector) + 1];
+		strcpy_s(this->numeDirector, strlen(numeDirector) + 1, numeDirector);
+		this->nrPsihiatrii = nrPsihiatrii;
+		this->nrTerapii = nrTerapii;
+	}
+	SpitalPsihiatrie(const SpitalPsihiatrie& sp) :Spital(sp) {
+		this->numeDirector = new char[strlen(sp.numeDirector) + 1];
+		strcpy_s(this->numeDirector, strlen(sp.numeDirector) + 1, sp.numeDirector);
+		this->nrPsihiatrii = sp.nrPsihiatrii;
+		this->nrTerapii = sp.nrTerapii;
+	}
+	SpitalPsihiatrie& operator=(const SpitalPsihiatrie& sp) {
+
+		if (this != &sp) {
+			Spital::operator=(sp);
+			if (this->numeDirector != NULL) {
+				delete[]this->numeDirector;
+			}
+			this->numeDirector = new char[strlen(sp.numeDirector) + 1];
+			strcpy_s(this->numeDirector, strlen(sp.numeDirector) + 1, sp.numeDirector);
+			this->nrPsihiatrii = sp.nrPsihiatrii;
+			this->nrTerapii = sp.nrTerapii;
+		}
+		return *this;
+	}
+
+	friend ostream& operator<<(ostream& scrie, const SpitalPsihiatrie& sp) {
+		scrie << (Spital)sp;
+		scrie << "Nume director spital: " << sp.numeDirector << endl;
+		scrie << "Numar psihiatrii: " << sp.nrPsihiatrii << endl;
+		scrie << "Numar terapii utilizate:" << sp.nrTerapii << endl;
+		scrie << endl;
+
+		return scrie;
+	}
+	~SpitalPsihiatrie() {
+		if (numeDirector != NULL) {
+			delete[]this->numeDirector;
+		}
+
+	}
+};
+class Medicament {
+private:
+	char* denumire;
+	string modDeAdministrare;
+	float pretIntreg;
+	float reducere; 
+	static float TVA;
+	bool prescriptieMedicala;
+	int nrFarmaciiPartenere;
+	const int termenValabilitate; //masurat in luni
+public:
+	char* getDenumire() {
+		return this->denumire;
+
+	}
+	string getModDeAdministrare() {
+		return this->modDeAdministrare;
+	}
+	float getPretIntreg() {
+		return this->pretIntreg;
+	}
+	float getReducere() {
+		return this->reducere;
+	}
+	bool getPrescriptieMedicala() {
+		return this->prescriptieMedicala;
+	}
+	int getNrFarmaciiPartenere() {
+		return this->nrFarmaciiPartenere;
+	}
+	const int getTermenValabilitate() {
+		return this->termenValabilitate;
+	}
+	//setteri
+	void setDenumire(const char* denumire) {
+		if (this->denumire != NULL)
+		{
+			delete[]this->denumire;
+		}
+		this->denumire = new char[strlen(denumire) + 1];
+		strcpy_s(this->denumire, strlen(denumire) + 1, denumire);
+	}
+	void setModDeAdministrare(string modDeAdministrare) {
+		if (modDeAdministrare.length() > 3)
+			this->modDeAdministrare = modDeAdministrare;
+
+	}
+	void setPretIntreg(float pretIntreg) {
+		if (pretIntreg > 0) {
+			this->pretIntreg = pretIntreg;
+		}
+	}
+	void setReducere(float reducere) {
+		if (reducere > -1) {
+			this->reducere = reducere;
+		}
+	}
+	void setPrescriptieMedicala(bool prescriptieMedicala) {
+		if (prescriptieMedicala == 1 || prescriptieMedicala == 0)
+			this->prescriptieMedicala = prescriptieMedicala;
+	}
+	void setNrFarmaciiPartenere(int nrFarmaciiPartenere) {
+		if (nrFarmaciiPartenere > 0) {
+			this->nrFarmaciiPartenere = nrFarmaciiPartenere;
+		}
+	}
+	void afisare() {
+		cout << "\nDenumire medicament:" << this->denumire;
+		cout << "\nMod de Administrare:" << this->modDeAdministrare;
+		cout << "\nPret intreg:" << this->pretIntreg;
+		cout << "\nReducere:" << this->reducere;
+		cout << "\nTVA:" << this->TVA;
+		cout << "\nPrescriptie medicala:" << this->prescriptieMedicala;
+		cout << "\nNumar farmacii partenere:" << this->nrFarmaciiPartenere;
+		cout << "\nTermen de valabilitate:" << this->termenValabilitate << " " << "luni";
+		cout << endl;
+		cout << endl;
+	}
+	Medicament() :termenValabilitate(6) {
+		this->denumire = new char[strlen("Aerius") + 1];
+		strcpy_s(this->denumire, strlen("Aerius") + 1, "Aerius");
+		this->modDeAdministrare = "oral";
+		this->pretIntreg =34;
+		this->reducere = 0.3;
+		this->prescriptieMedicala = 0;
+		this->nrFarmaciiPartenere = 12;
+	}
+	Medicament(const char* denumire, float pretIntreg, bool prescriptieMedicala, int nrFarmaciiPartenere) :termenValabilitate(6) {
+		this->denumire = new char[strlen(denumire) + 1];
+		strcpy_s(this->denumire, strlen(denumire) + 1, denumire);
+		this->modDeAdministrare = "oral";
+		this->pretIntreg = pretIntreg;
+		this->reducere = 0.5;
+		this->prescriptieMedicala = prescriptieMedicala;
+		this->nrFarmaciiPartenere = nrFarmaciiPartenere;
+
+	}
+	Medicament(const char* denumire, string modDeAdministrare, float pretIntreg, float reducere, const int termenV) :termenValabilitate(termenV) {
+		this->denumire = new char[strlen(denumire) + 1];
+		strcpy_s(this->denumire, strlen(denumire) + 1, denumire);
+		this->modDeAdministrare = modDeAdministrare;
+		this->pretIntreg = pretIntreg;
+		this->reducere = reducere;
+		this->prescriptieMedicala = 1;
+		this->nrFarmaciiPartenere = 5;
+
+
+	}
+	Medicament(string modDeAdministrare, float pretIntreg, float reducere, bool prescriptieMedicala, int nrFarmaciiPartenere, const int termenV) :termenValabilitate(termenV) {
+		this->denumire = new char[strlen("MollekinImuno") + 1];
+		strcpy_s(this->denumire, strlen("MollekinImuno") + 1, "MollekinImuno");
+		this->modDeAdministrare = modDeAdministrare;
+		this->pretIntreg = pretIntreg;
+		this->reducere = reducere;
+		this->prescriptieMedicala = prescriptieMedicala;
+		this->nrFarmaciiPartenere = nrFarmaciiPartenere;
+	}
+	//constructor de copiere
+	Medicament(const Medicament& medicament) :termenValabilitate(medicament.termenValabilitate) {
+		this->denumire = new char[strlen(medicament.denumire) + 1];
+		strcpy_s(this->denumire, strlen(medicament.denumire) + 1, medicament.denumire);
+		this->modDeAdministrare = medicament.modDeAdministrare;
+		this->pretIntreg = medicament.pretIntreg;
+		this->reducere = medicament.reducere;
+		this->prescriptieMedicala = medicament.prescriptieMedicala;
+		this->nrFarmaciiPartenere = medicament.nrFarmaciiPartenere;
+	}
+	//operatori
+	Medicament& operator=(const Medicament& medicament) {        //3.1
+		if (this != &medicament) {
+			this->denumire = new char[strlen(medicament.denumire) + 1];
+			strcpy_s(this->denumire, strlen(medicament.denumire) + 1, medicament.denumire);
+			this->modDeAdministrare = medicament.modDeAdministrare;
+			this->pretIntreg = medicament.pretIntreg;
+			this->reducere = medicament.reducere;
+			this->prescriptieMedicala = medicament.prescriptieMedicala;
+			this->nrFarmaciiPartenere = medicament.nrFarmaciiPartenere;
+			return *this;
+		}
+
+	}
+	bool operator<(Medicament m) {      //3.2
+		return this->pretIntreg < m.pretIntreg;
+	}
+	Medicament operator++(int) {       //3.3
+		Medicament temporar = *this;
+		this->reducere += 0.05;
+		return temporar;
+
+	}
+
+	bool operator!=(Medicament m) {    //3.4
+		return this->nrFarmaciiPartenere != m.nrFarmaciiPartenere;
+	}
+	//operator citire de la tastatura
+	friend istream& operator>>(istream& citire, Medicament& m) {
+		cout << "Denumire:";
+		if (m.denumire != NULL) {
+			delete[]m.denumire;
+
+		}
+		m.denumire = new char[strlen(m.denumire) + 1];
+		citire >> m.denumire;
+		cout << "Mod de administrare:"; citire >> m.modDeAdministrare;
+		cout << "Pret intreg:"; citire >> m.pretIntreg;
+		cout << "Reducere:"; citire >> m.reducere;
+		cout << "Prescriptie medicala:"; citire >> m.prescriptieMedicala;
+		cout << "Numar farmacii partenere:"; citire >> m.nrFarmaciiPartenere;
+		return citire;
+	}
+	friend ostream& operator<<(ostream& scrie, const Medicament& m) {
+		scrie << "Denumire:" << m.denumire << endl;
+		scrie << "Mod de administrare:" << m.modDeAdministrare << endl;
+		scrie << "Pret intreg:" << m.pretIntreg << endl;
+		scrie << "Reducere:" << m.reducere << endl;
+		scrie << "TVA:" << m.TVA << endl;
+		scrie << "Prescriptie medicala:" << m.prescriptieMedicala << endl;
+		scrie << "Numar farmacii partenere:" << m.nrFarmaciiPartenere << endl;
+		scrie << "Termen de valabiliate:" << m.termenValabilitate << " luni" << endl;
+		return scrie;
+
+
+	}
+
+	~Medicament() {
+		if (this->denumire != NULL)
+		{
+			delete[]this->denumire;
+
+		}
+	}
+	//funct de acc var static
+	static float getTVA() {
+		return TVA;
+	}
+};
+float Medicament::TVA = 0.09;
+class Pastila :public Medicament {
+private:
+	string substantaActiva;
+	int nrComprimateZi;
+	char* scop;
+public:
+	string getSubstantaActiva() {
+		return this->substantaActiva;
+	}
+	int getNrComprimateZi() {
+		return this->nrComprimateZi;
+	}
+	char* getScop() {
+		return this->scop;
+	}
+	void setSubstantaActiva(string substantaActiva) {
+		if (substantaActiva.length() > 3) {
+			this->substantaActiva = substantaActiva;
+		}
+	}
+	void setNrComprimateZi(int nrComprimateZi) {
+		if (nrComprimateZi > 0 && nrComprimateZi < 7) {
+			this->nrComprimateZi = nrComprimateZi;
+		}
+	}
+	void setScop(const char* scop) {
+		if (this->scop != NULL) {
+			delete[]this->scop;
+		}
+		this->scop = new char[strlen(scop) + 1];
+		strcpy_s(this->scop, strlen(scop) + 1, scop);
+	}
+	Pastila() :Medicament("Parasinus", 23, 0, 50) {
+		this->substantaActiva = "Paracetamol";
+		this->nrComprimateZi = 3;
+		this->scop = new char[strlen("raceala") + 1];
+		strcpy_s(this->scop, strlen("raceala") + 1, "raceala");
+	}
+	Pastila(string substantaActiva, int nrComprimateZi, const char* scop) :Medicament() {
+		this->substantaActiva = substantaActiva;
+		this->nrComprimateZi = nrComprimateZi;
+		this->scop = new char[strlen(scop) + 1];
+		strcpy_s(this->scop, strlen(scop) + 1, scop);
+
+	}
+	Pastila(string modDeAdministrare, float pretIntreg, float reducere, bool prescriptieMedicala,
+		int nrFarmaciiPartenere, const int termenV, string substantaActiva,
+		int nrComprimateZi, const char* scop) :Medicament(modDeAdministrare, pretIntreg, reducere,
+			prescriptieMedicala, nrFarmaciiPartenere, termenV) {
+		this->substantaActiva = substantaActiva;
+		this->nrComprimateZi = nrComprimateZi;
+		this->scop = new char[strlen(scop) + 1];
+		strcpy_s(this->scop, strlen(scop) + 1, scop);
+
+	}
+	Pastila(const Pastila& p) :Medicament(p) {
+		this->substantaActiva = p.substantaActiva;
+		this->nrComprimateZi = p.nrComprimateZi;
+		this->scop = new char[strlen(p.scop) + 1];
+		strcpy_s(this->scop, strlen(p.scop) + 1, p.scop);
+	}
+	Pastila operator=(const Pastila& p) {
+		if (this != &p) {
+			Medicament::operator=(p);
+			this->substantaActiva = p.substantaActiva;
+			this->nrComprimateZi = p.nrComprimateZi;
+			if (this->scop != NULL) {
+				delete[]this->scop;
+			}
+			this->scop = new char[strlen(p.scop) + 1];
+			strcpy_s(this->scop, strlen(p.scop) + 1, p.scop);
+		}
+		return *this;
+	}
+	friend ostream& operator <<(ostream& scrie, const Pastila& p) {
+		scrie << (Medicament)p;
+		scrie << "Substanta activa:" << p.substantaActiva << endl;
+		scrie << "Numar comprimate pe zi:" << p.nrComprimateZi << endl;
+		scrie << "Folosita pentru tratare:" << p.scop << endl;
+		return scrie;
+	}
+	~Pastila() {
+		if (scop != NULL) {
+			delete[]this->scop;
+		}
+	}
+};
+void main() {
+	cout << "Verificare clasa SpitalPsihiatrie:" << endl;
+	SpitalPsihiatrie sp1;
+	cout << "Obiectul sp1:" << endl << sp1 << endl;
+	SpitalPsihiatrie sp2("Socola", 1950, 80, 40, "Iasi", "Chiriac", 34, 5);
+	cout << "Obiectul sp2:" << endl << sp2 << endl;
+	SpitalPsihiatrie sp3(19, 3, "Pavel");
+	cout << "Obiectul sp3:" << endl << sp3 << endl;
+	SpitalPsihiatrie sp4 = sp3;
+	cout << "Obiectul sp4 realizat cu ajutorul constructorului de copiere sp4:" << endl << sp4 << endl;
+	sp3 = sp2;
+	cout << "Obiectul sp3 dupa aplicarea operatorului = : sp3=sp2 :" << endl << sp3 << endl;
+	cout << endl << "VERIFICARE GETTERI SI SETTERI(se face doar pentru atributele proprii):" << endl;
+	cout << "getteri:" << endl;
+	cout << sp1.getNumeDirector() << "|" << sp1.getNrPsihiatrii() << " psihiatrii |" << sp1.getNrTerapii() << " terapii" << endl;
+	cout << "setteri:" << endl;
+	sp1.setNumeDirector("Ionescu");
+	sp1.setNrPsihiatrii(15);
+	sp1.setNrTerapii(2);
+	cout << sp1.getNumeDirector() << "|" << sp1.getNrPsihiatrii() << " psihiatrii |" << sp1.getNrTerapii() << " terapii" << endl;
+	cout << endl << "Verificare clasa Pastila:" << endl;
+	Pastila p1;
+	cout << "Obiectul p1:" << endl << p1 << endl;
+	Pastila p2("Oral", 40, 0, 0, 39, 7, "Vitamina C", 2, "Imunitate");
+	cout << "Obiectul p2:" << endl << p2 << endl;
+	Pastila p3("Ibuprofen", 3, "Dureri");
+	cout << "Obiectul p3:" << endl << p3 << endl;
+	Pastila p4 = p2;
+	cout << "Obiectul p4 care a fost creat cu ajutorul constructorului de copiere: p4=p2: " << endl << p4 << endl;
+	p2 = p1;
+	cout << "Obiectul p2 dupa utilizarea operatorului =: p2=p1:" << endl << p2 << endl;
+	cout << endl << "VERIFICARE GETTERI SI SETTERI(se face doar pentru atributele proprii):" << endl;
+	cout << p1.getSubstantaActiva() << "|" << p1.getNrComprimateZi() << " pastile|" << p1.getScop() << endl;
+	p2.setSubstantaActiva("Desloratadina");
+	p2.setNrComprimateZi(5);
+	p2.setScop("Alergie");
+	cout << p2.getSubstantaActiva() << "|" << p2.getNrComprimateZi() << " pastile|" << p2.getScop() << endl;
+	//upcasting
+	cout << endl<<"Realizare upcasting pentru p2:" << endl;
+	Medicament *m15;
+	m15 = &p2;
+	cout << endl << *m15;
+}
